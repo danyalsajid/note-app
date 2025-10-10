@@ -28,9 +28,9 @@ To start the development servers for both the backend and frontend:
 npm run dev
 ```
 
-This will concurrently start:
-- Backend server (typically on `http://localhost:3001` or as configured in `apps/server`)
-- Frontend web app (on `http://localhost:3000` as configured in `apps/web/vite.config.ts`)
+This will start both the backend server and frontend web app concurrently for local development.
+
+**Note for Deployment**: On platforms like Railway, only the server is deployed as a single service, serving both API and static frontend files.
 
 ### Production
 

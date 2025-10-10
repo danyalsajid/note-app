@@ -5,7 +5,7 @@ nixPkgs = ['nodejs_20', 'python3', 'gcc', 'pkg-config']
 cmds = ['npm ci']
 
 [phases.build]
-cmds = ['npm run build']
+cmds = ['npm run build --workspace=vite-template-solid', 'npm run build --workspace=note-app-server']
 
 [start]
-cmd = 'npm start'
+cmd = 'npm run start --prefix apps/server'
