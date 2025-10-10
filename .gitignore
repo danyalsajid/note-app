@@ -5,6 +5,10 @@ node_modules/
 dist/
 build/
 
+# Database files
+apps/server/db.sqlite
+apps/server/drizzle/
+
 # Environment variables
 .env
 
