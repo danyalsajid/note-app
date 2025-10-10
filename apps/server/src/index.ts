@@ -17,8 +17,8 @@ app.get("/api/health", (req, res) => {
 	res.json({ status: "OK", timestamp: new Date().toISOString() });
 });
 
-// Catch-all handler: send back web's index.html file for client-side routing
-app.get('*', (req, res) => {
+// Catch-all handler for client-side routing
+app.use((req, res) => {
 	res.sendFile(path.join(__dirname, "../../web/dist/index.html"));
 });
 
