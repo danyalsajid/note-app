@@ -1,28 +1,35 @@
 {
-  "name": "note-app",
-  "version": "1.0.0",
-  "description": "A note-taking application with frontend and backend",
-  "private": true,
-  "scripts": {
-    "dev": "concurrently \"npm run dev --prefix apps/server\" \"npm run dev --prefix apps/web\"",
-    "start": "concurrently \"npm run start --prefix apps/server\" \"npm run start --prefix apps/web\"",
-    "install:all": "npm install && npm install --prefix apps/server && npm install --prefix apps/web",
-    "build": "npm run build --prefix apps/server && npm run build --prefix apps/web",
-    "clean": "npm run clean --prefix apps/server && npm run clean --prefix apps/web",
-    "railway:build": "npm install && npm run build",
-		"railway:start": "npm run start"
-  },
-  "devDependencies": {
-    "concurrently": "^8.2.0"
-  },
-  "workspaces": [
-    "apps/*"
-  ],
-  "keywords": [
-    "notes",
-    "app",
-    "monorepo"
-  ],
-  "author": "",
-  "license": "MIT"
+	"name": "note-app",
+	"version": "1.0.0",
+	"description": "A note-taking application with frontend and backend",
+	"private": true,
+	"scripts": {
+		"dev": "concurrently \"npm run dev --prefix apps/server\" \"npm run dev --prefix apps/web\"",
+		"start": "concurrently \"npm run start --prefix apps/server\" \"npm run start --prefix apps/web\"",
+		"install:all": "npm install && npm install --prefix apps/server && npm install --prefix apps/web",
+		"build": "npm run build --prefix apps/server && npm run build --prefix apps/web",
+		"clean": "npm run clean --prefix apps/server && npm run clean --prefix apps/web",
+		"railway:build": "npm install && npm run build",
+		"railway:start": "npm run start",
+		"lint": "npm run lint --prefix apps/server && npm run lint --prefix apps/web",
+		"lint:fix": "npm run lint:fix --prefix apps/server && npm run lint:fix --prefix apps/web",
+		"format": "prettier --write .",
+		"format:check": "prettier --check ."
+	},
+	"devDependencies": {
+		"concurrently": "^8.2.0",
+		"eslint-config-prettier": "^10.1.8",
+		"eslint-plugin-prettier": "^5.5.4",
+		"prettier": "^3.6.2"
+	},
+	"workspaces": [
+		"apps/*"
+	],
+	"keywords": [
+		"notes",
+		"app",
+		"monorepo"
+	],
+	"author": "",
+	"license": "MIT"
 }

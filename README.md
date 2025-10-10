@@ -8,17 +8,19 @@
 ### Installation
 
 1. Clone the repository:
-   ```bash
-   git clone <repository-url>
-   cd note-app
-   ```
+
+    ```bash
+    git clone <repository-url>
+    cd note-app
+    ```
 
 2. Install dependencies for the entire project:
-   ```bash
-   npm install
-   ```
-   
-   This will install dependencies for the root project and all workspaces (`apps/server` and `apps/web`).
+
+    ```bash
+    npm install
+    ```
+
+    This will install dependencies for the root project and all workspaces (`apps/server` and `apps/web`).
 
 ### Development
 
