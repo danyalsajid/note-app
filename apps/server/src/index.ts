@@ -4,9 +4,10 @@ import type { Request, Response } from "express";
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.get("/health", (req: Request, res: Response) => {
-  console.log("Health check");
-    res.json({ message: "Hello Express!" });
+// Health check
+app.get("/api/health", (req, res) => {
+	console.log("Health check");
+	res.json({ status: "OK", timestamp: new Date().toISOString() });
 });
 
 app.listen(PORT, () => {
