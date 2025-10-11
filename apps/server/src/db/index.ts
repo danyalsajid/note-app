@@ -3,6 +3,7 @@ import { drizzle } from 'drizzle-orm/better-sqlite3';
 import * as schema from './schema.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { mkdirSync } from 'fs';
 
 // Get the directory of the current module
 const __filename = fileURLToPath(import.meta.url);
@@ -20,6 +21,10 @@ const DB_PATH = process.env.DATABASE_URL || (() => {
   const upLevels = inDist ? '../../..' : '../..';
   return path.join(__dirname, upLevels, 'data/database.db');
 })();
+
+// Ensure the directory exists before creating the database
+const dbDir = path.dirname(DB_PATH);
+mkdirSync(dbDir, { recursive: true });
 
 const sqlite: Database.Database = new Database(DB_PATH);
 
