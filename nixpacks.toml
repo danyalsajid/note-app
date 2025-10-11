@@ -5,7 +5,7 @@ nixPkgs = ['nodejs_22', 'python3', 'gcc', 'pkg-config']
 cmds = ['npm ci']
 
 [phases.build]
-cmds = ['cd apps/web && npm ci && npm run build', 'cd apps/server && npm ci && npm run build']
+cmds = ['npm ci --prefix apps/web && cd apps/web && npm run build', 'npm ci --prefix apps/server && cd apps/server && npm run build']
 
 [start]
 cmd = 'cd apps/server && npm run start'
