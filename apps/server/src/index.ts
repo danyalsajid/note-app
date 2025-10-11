@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url';
 import { db } from './db/index.js';
 import { notes } from './db/schema.js';
 import { eq } from 'drizzle-orm';
+import { initializeDatabase } from './db/database.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -123,6 +124,17 @@ app.use((req, res) => {
 	res.sendFile(path.join(webDistPath, 'index.html'));
 });
 
-app.listen(PORT, () => {
-	console.log(`Server running on http://localhost:${PORT}`);
-});
+// Initialize database and start server
+async function startServer() {
+	try {
+		await initializeDatabase();
+		app.listen(PORT, () => {
+			console.log(`Server running on http://localhost:${PORT}`);
+		});
+	} catch (error) {
+		console.error('Failed to start server:', error);
+		process.exit(1);
+	}
+}
+
+startServer();
