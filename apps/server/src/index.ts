@@ -44,15 +44,19 @@ app.get('/api/notes', async (req, res) => {
 
 app.post('/api/notes', async (req, res) => {
 	try {
-		const { title, content } = req.body;
+		const { content, attachedToId, attachedToType, tags } = req.body;
 
-		if (!title || !content) {
-			return res.status(400).json({ error: 'Title and content are required' });
+		if (!content || !attachedToId || !attachedToType) {
+			return res.status(400).json({ error: 'Content, attachedToId, and attachedToType are required' });
 		}
 
+		const id = `note-${Date.now()}`;
 		const newNote = await db.insert(notes).values({
-			title,
+			id,
 			content,
+			attachedToId,
+			attachedToType,
+			tags: tags ? JSON.stringify(tags) : undefined,
 		}).returning();
 
 		res.status(201).json(newNote[0]);
@@ -64,7 +68,7 @@ app.post('/api/notes', async (req, res) => {
 
 app.get('/api/notes/:id', async (req, res) => {
 	try {
-		const noteId = parseInt(req.params.id);
+		const noteId = req.params.id;
 		const note = await db.select().from(notes).where(eq(notes.id, noteId));
 
 		if (note.length === 0) {
@@ -80,15 +84,19 @@ app.get('/api/notes/:id', async (req, res) => {
 
 app.put('/api/notes/:id', async (req, res) => {
 	try {
-		const noteId = parseInt(req.params.id);
-		const { title, content } = req.body;
+		const noteId = req.params.id;
+		const { content, tags } = req.body;
 
-		if (!title || !content) {
-			return res.status(400).json({ error: 'Title and content are required' });
+		if (!content) {
+			return res.status(400).json({ error: 'Content is required' });
 		}
 
 		const updatedNote = await db.update(notes)
-			.set({ title, content, updatedAt: new Date() })
+			.set({ 
+				content, 
+				tags: tags ? JSON.stringify(tags) : undefined,
+				updatedAt: new Date().toISOString() 
+			})
 			.where(eq(notes.id, noteId))
 			.returning();
 
@@ -105,7 +113,7 @@ app.put('/api/notes/:id', async (req, res) => {
 
 app.delete('/api/notes/:id', async (req, res) => {
 	try {
-		const noteId = parseInt(req.params.id);
+		const noteId = req.params.id;
 		const deletedNote = await db.delete(notes).where(eq(notes.id, noteId)).returning();
 
 		if (deletedNote.length === 0) {

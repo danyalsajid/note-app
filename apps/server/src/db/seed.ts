@@ -253,7 +253,7 @@ function getSeedNotes() {
 }
 
 // Seed database with initial data using bulk inserts
-async function seedDatabase(db) {
+async function seedDatabase(db: any) {
 	console.log("Seeding database with initial data");
 
 	try {
