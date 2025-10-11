@@ -14,7 +14,15 @@ const __dirname = path.dirname(__filename);
 app.use(express.json());
 
 // Serve static files from the web app's build directory
-app.use(express.static(path.join(__dirname, '../../web/dist')));
+// In development: from src/index.ts -> ../../web/dist
+// In production: from dist/src/index.js -> ../../../web/dist
+const pathParts = __dirname.split(path.sep);
+const inDist = pathParts.includes('dist');
+const webDistPath = inDist 
+  ? path.join(__dirname, '../../../web/dist')
+  : path.join(__dirname, '../../web/dist');
+
+app.use(express.static(webDistPath));
 
 // API routes
 app.get('/api/health', (req, res) => {
@@ -112,7 +120,7 @@ app.delete('/api/notes/:id', async (req, res) => {
 
 // Catch-all handler for client-side routing
 app.use((req, res) => {
-	res.sendFile(path.join(__dirname, '../../web/dist/index.html'));
+	res.sendFile(path.join(webDistPath, 'index.html'));
 });
 
 app.listen(PORT, () => {
