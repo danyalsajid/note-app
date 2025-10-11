@@ -4,9 +4,9 @@ import { fileURLToPath } from 'url';
 import cors from 'cors';
 
 // Database
-import { initializeDatabase } from "./db/database.ts";
-import { db } from "./db/connection.ts";
-import { notes } from "./db/schema.ts";
+import { initializeDatabase } from "./db/database.js";
+import { db } from "./db/connection.js";
+import { notes } from "./db/schema.js";
 
 const app = express();
 const PORT = process.env.PORT || 3001;

@@ -1,4 +1,4 @@
-import { hierarchyNodes, hierarchyClosure, notes, users } from "./schema.ts";
+import { hierarchyNodes, hierarchyClosure, notes, users } from "./schema.js";
 
 function getSeedUsers() {
 	return [

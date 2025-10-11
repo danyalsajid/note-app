@@ -44,9 +44,7 @@
 
 		// ESM support
 		"allowSyntheticDefaultImports": true,
-		"esModuleInterop": true,
-		"allowImportingTsExtensions": true,
-		"noEmit": true
+		"esModuleInterop": true
 	},
 	"include": [
 		"src/**/*",

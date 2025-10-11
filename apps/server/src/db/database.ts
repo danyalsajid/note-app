@@ -1,6 +1,6 @@
-import { db } from "./connection.ts";
-import { notes, users, hierarchyNodes, hierarchyClosure, attachments } from "./schema.ts";
-import { seedDatabase } from "./seed.ts";
+import { db } from "./connection.js";
+import { notes, users, hierarchyNodes, hierarchyClosure, attachments } from "./schema.js";
+import { seedDatabase } from "./seed.js";
 import { migrate } from "drizzle-orm/better-sqlite3/migrator";
 
 // Initialize database function
