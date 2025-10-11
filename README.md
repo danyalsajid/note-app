@@ -53,6 +53,46 @@ npm run start
 - `apps/web/` - Frontend web application
 - `apps/server/` - Backend server
 
-## Development
 
-This is a monorepo setup with separate applications for web and server components.
+# Deployment Guide for Railway
+
+## Production Setup
+
+This server is configured to work with Railway's deployment platform.
+
+### Environment Variables
+
+Set these in your Railway project settings:
+
+```env
+DATABASE_URL=./data/database.db
+NODE_ENV=production
+PORT=3001  # Railway will override this automatically
+```
+
+
+### Database
+
+- **Development**: Uses `./data/database.db` (local file)
+- **Production**: Railway will create a fresh database on first deployment
+- **Migrations**: Run automatically when deploying (if new migrations exist)
+
+### Deployment Steps
+
+1. **Connect Repository**: Link your GitHub repository to Railway
+2. **Set Environment Variables**: Add the variables above in Railway dashboard
+3. **Deploy**: Railway will automatically build and deploy your app
+4. **Database Setup**: The first deployment will create a fresh database
+
+### Database Scripts
+
+```bash
+# Generate new migrations (run locally)
+npm run db:generate
+
+# Apply migrations (run locally or in production)
+npm run db:migrate
+
+# Reset database (development only)
+npm run db:reset
+```
