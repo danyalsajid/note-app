@@ -3,7 +3,7 @@ import { notes, users, hierarchyNodes, hierarchyClosure, attachments } from "./s
 import { seedDatabase } from "./seed.js";
 
 // Initialize database function
-export const initializeDatabase = async () => {  
+export const initializeDatabase = async (): Promise<void> => {  
 	try {
 		console.log("Creating tables from schema");
     

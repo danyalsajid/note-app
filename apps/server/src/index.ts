@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { type Request, type Response } from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { initializeDatabase } from './db/database.js';
@@ -23,23 +23,31 @@ const webDistPath = inDist
 app.use(express.static(webDistPath));
 
 // API routes
-import notesController from './api/controllers/notes.controller.js';
+import authRoutes from './api/routes/auth.routes.js';
+import notesRoutes from './api/routes/notes.routes.js';
+import hierarchyRoutes from './api/routes/hierarchy.routes.js';
 
-app.get('/api/health', (req, res) => {
+app.get('/api/health', (req: Request, res: Response) => {
 	console.log('Health check');
 	res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
-// Use notes controller for all notes routes
-app.use('/api', notesController);
+// Use auth routes for authentication
+app.use('/api', authRoutes);
+
+// Use notes routes for all notes routes
+app.use('/api', notesRoutes);
+
+// Use hierarchy routes for all hierarchy routes
+app.use('/api', hierarchyRoutes);
 
 // Catch-all handler for client-side routing
-app.use((req, res) => {
+app.use((req: Request, res: Response) => {
 	res.sendFile(path.join(webDistPath, 'index.html'));
 });
 
 // Initialize database and start server
-async function startServer() {
+async function startServer(): Promise<void> {
 	try {
 		await initializeDatabase();
 		app.listen(PORT, () => {

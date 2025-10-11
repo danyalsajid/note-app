@@ -1,12 +1,11 @@
-import express from 'express';
 import { db } from '../../db/index.js';
 import { notes } from '../../db/schema.js';
 import { eq } from 'drizzle-orm';
-
-const router = express.Router();
+import type { Request, Response } from 'express';
+import type { CreateNoteBody, UpdateNoteBody } from '../../types/notes.types.js';
 
 // GET /api/notes - Get all notes
-router.get('/notes', async (req, res) => {
+export async function getAllNotes(req: Request, res: Response) {
 	try {
 		const allNotes = await db.select().from(notes);
 		res.json(allNotes);
@@ -14,10 +13,10 @@ router.get('/notes', async (req, res) => {
 		console.error('Error fetching notes:', error);
 		res.status(500).json({ error: 'Failed to fetch notes' });
 	}
-});
+}
 
 // POST /api/notes - Create a new note
-router.post('/notes', async (req, res) => {
+export async function createNote(req: Request<object, object, CreateNoteBody>, res: Response) {
 	try {
 		const { content, attachedToId, attachedToType, tags } = req.body;
 
@@ -39,12 +38,12 @@ router.post('/notes', async (req, res) => {
 		console.error('Error creating note:', error);
 		res.status(500).json({ error: 'Failed to create note' });
 	}
-});
+}
 
 // GET /api/notes/:id - Get a specific note
-router.get('/notes/:id', async (req, res) => {
+export async function getNoteById(req: Request<{ id: string }>, res: Response) {
 	try {
-		const noteId = req.params.id;
+		const { id: noteId } = req.params;
 		const note = await db.select().from(notes).where(eq(notes.id, noteId));
 
 		if (note.length === 0) {
@@ -56,12 +55,13 @@ router.get('/notes/:id', async (req, res) => {
 		console.error('Error fetching note:', error);
 		res.status(500).json({ error: 'Failed to fetch note' });
 	}
-});
+}
 
 // PUT /api/notes/:id - Update a note
-router.put('/notes/:id', async (req, res) => {
+export async function updateNote(req: Request<{ id: string }, object, UpdateNoteBody>, res: Response) {
 	try {
-		const noteId = req.params.id;
+		const { id: noteId } = req.params;
+
 		const { content, tags } = req.body;
 
 		if (!content) {
@@ -86,12 +86,12 @@ router.put('/notes/:id', async (req, res) => {
 		console.error('Error updating note:', error);
 		res.status(500).json({ error: 'Failed to update note' });
 	}
-});
+}
 
 // DELETE /api/notes/:id - Delete a note
-router.delete('/notes/:id', async (req, res) => {
+export async function deleteNote(req: Request<{ id: string }>, res: Response) {
 	try {
-		const noteId = req.params.id;
+		const { id: noteId } = req.params;
 		const deletedNote = await db.delete(notes).where(eq(notes.id, noteId)).returning();
 
 		if (deletedNote.length === 0) {
@@ -103,6 +103,4 @@ router.delete('/notes/:id', async (req, res) => {
 		console.error('Error deleting note:', error);
 		res.status(500).json({ error: 'Failed to delete note' });
 	}
-});
-
-export default router;
+}

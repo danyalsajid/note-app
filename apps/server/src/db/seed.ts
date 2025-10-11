@@ -1,4 +1,6 @@
+import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 import { hierarchyNodes, hierarchyClosure, notes, users } from "./schema.js";
+import type * as schema from './schema.js';
 
 function getSeedUsers() {
 	return [
@@ -253,7 +255,7 @@ function getSeedNotes() {
 }
 
 // Seed database with initial data using bulk inserts
-async function seedDatabase(db: any) {
+export async function seedDatabase(db: BetterSQLite3Database<typeof schema>): Promise<void> {
 	console.log("Seeding database with initial data");
 
 	try {
@@ -282,5 +284,3 @@ async function seedDatabase(db: any) {
 		throw error;
 	}
 }
-
-export { seedDatabase };
