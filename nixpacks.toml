@@ -1,11 +1,11 @@
 [phases.setup]
-nixPkgs = ['nodejs_20', 'python3', 'gcc', 'pkg-config']
+nixPkgs = ['nodejs_22', 'python3', 'gcc', 'pkg-config']
 
 [phases.install]
 cmds = ['npm ci']
 
 [phases.build]
-cmds = ['cd apps/web && npm run build', 'cd apps/server && npm run build']
+cmds = ['npm ci --prefix apps/web --cache /tmp/web-cache && cd apps/web && npm run build', 'npm ci --prefix apps/server --cache /tmp/server-cache && cd apps/server && npm run build']
 
 [start]
 cmd = 'cd apps/server && npm run start'
