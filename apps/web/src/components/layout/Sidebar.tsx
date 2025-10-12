@@ -2,18 +2,13 @@ import { onMount, For, Show, createSignal } from 'solid-js';
 import { useNavigate, useParams } from '@solidjs/router';
 import TreeItem from '../tree/TreeItem';
 import AddItemModal from '../ui/AddItemModal';
-import {
-	organisations,
-	loading,
-	error,
-	fetchHierarchyTree,
-	createHierarchyItem,
-} from '../../stores';
+import { useNavigation } from '../../contexts';
 import styles from './Sidebar.module.css';
 
 export default function Sidebar() {
 	const navigate = useNavigate();
 	const params = useParams();
+	const navigation = useNavigation();
 
 	// Modal state management
 	const [isModalOpen, setIsModalOpen] = createSignal(false);
@@ -24,7 +19,7 @@ export default function Sidebar() {
 
 	// Fetch hierarchy on component mount
 	onMount(() => {
-		fetchHierarchyTree();
+		navigation.fetchHierarchyTree();
 	});
 
 	const openModal = (itemType: string, parentId?: string) => {
@@ -45,7 +40,7 @@ export default function Sidebar() {
 			const parentId = modalParentId();
 			const id = `${itemType}-${Date.now()}`;
 
-			await createHierarchyItem({
+			await navigation.createHierarchyItem({
 				id,
 				type: itemType,
 				name,
@@ -98,7 +93,7 @@ export default function Sidebar() {
 		};
 
 		// Search through all organisations
-		for (const org of organisations()) {
+		for (const org of navigation.organisations()) {
 			if (org.id === id) {
 				return org.name;
 			}
@@ -137,7 +132,7 @@ export default function Sidebar() {
 		};
 
 		// Search through all organisations
-		for (const org of organisations()) {
+		for (const org of navigation.organisations()) {
 			if (org.id === id) {
 				return org.type;
 			}
@@ -169,21 +164,21 @@ export default function Sidebar() {
 						</button>
 					</div>
 
-					<Show when={loading()}>
+					<Show when={navigation.loading()}>
 						<div class={styles.loading}>
 							Loading...
 						</div>
 					</Show>
 
-					<Show when={error()}>
+					<Show when={navigation.error()}>
 						<div class={styles.error}>
-							{error()}
+							{navigation.error()}
 						</div>
 					</Show>
 
-					<Show when={!loading() && !error()}>
+					<Show when={!navigation.loading() && !navigation.error()}>
 						<div class={styles.content}>
-							<For each={organisations()}>
+							<For each={navigation.organisations()}>
 								{org => (
 									<TreeItem
 										item={org}

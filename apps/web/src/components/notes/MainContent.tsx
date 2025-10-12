@@ -2,13 +2,7 @@ import { Show, createEffect } from 'solid-js';
 import { useParams } from '@solidjs/router';
 import NotesSection from './NotesSection';
 import ItemHeader from '../tree/ItemHeader';
-import {
-	selectedItem,
-	selectedItemLoading,
-	error,
-	fetchHierarchyItem,
-	clearSelectedItem,
-} from '../../stores';
+import { useNavigation } from '../../contexts';
 import {
 	getTypeLabel,
 	getTypeColor,
@@ -19,16 +13,17 @@ import styles from './MainContent.module.css';
 
 export default function MainContent() {
 	const params = useParams();
+	const navigation = useNavigation();
 
 	// Fetch item when params.id changes
 	createEffect(() => {
 		const id = params.id;
 		if (!id) {
-			clearSelectedItem();
+			navigation.clearSelectedItem();
 			return;
 		}
 
-		void fetchHierarchyItem(id);
+		void navigation.fetchHierarchyItem(id);
 	});
 
 	const handleAddNote = () => {
@@ -38,22 +33,22 @@ export default function MainContent() {
 
 	return (
 		<main class={styles.main}>
-			<Show when={selectedItemLoading()}>
+			<Show when={navigation.selectedItemLoading()}>
 				<div class={styles.centerContent}>
 					<div class={styles.loading}>Loading...</div>
 				</div>
 			</Show>
 
-			<Show when={error()}>
+			<Show when={navigation.error()}>
 				<div class={styles.centerContent}>
-					<div class={styles.error}>{error()}</div>
+					<div class={styles.error}>{navigation.error()}</div>
 				</div>
 			</Show>
 
 			<Show
-				when={!selectedItemLoading() && !error() && selectedItem()}
+				when={!navigation.selectedItemLoading() && !navigation.error() && navigation.selectedItem()}
 				fallback={
-					<Show when={!selectedItemLoading() && !error()}>
+					<Show when={!navigation.selectedItemLoading() && !navigation.error()}>
 						<div class={styles.emptyState}>
 							<div class={styles.emptyIcon}>
 								<i class="fas fa-mouse-pointer text-6xl text-gray-300" />
@@ -71,7 +66,7 @@ export default function MainContent() {
 			>
 				<div class={styles.contentWrapper}>
 					<ItemHeader
-						selectedItem={selectedItem()!}
+						selectedItem={navigation.selectedItem()!}
 						getTypeIcon={getTypeIcon}
 						getTypeColor={getTypeColor}
 						getTypeLabel={getTypeLabel}
@@ -80,7 +75,7 @@ export default function MainContent() {
 
 					{/* Notes Section */}
 					<NotesSection
-						selectedItem={selectedItem()!}
+						selectedItem={navigation.selectedItem()!}
 						formatDate={formatDate}
 						onAddNote={handleAddNote}
 					/>
