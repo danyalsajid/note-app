@@ -1,0 +1,61 @@
+@reference "tailwindcss";
+
+.form {
+	@apply flex flex-col gap-6;
+}
+
+.formGroup {
+	@apply flex flex-col gap-2;
+}
+
+.label {
+	@apply text-sm font-semibold text-gray-700;
+}
+
+.textarea,
+.input {
+	@apply w-full px-3 py-3 border border-gray-300 rounded-lg text-sm transition-all;
+}
+
+.textarea {
+	@apply resize-y min-h-30;
+}
+
+.textarea:focus,
+.input:focus {
+	@apply outline-none border-blue-500 ring-2 ring-blue-500/20;
+}
+
+.hint {
+	@apply text-xs text-gray-500 m-0;
+}
+
+.actions {
+	@apply flex justify-end gap-3 mt-2;
+}
+
+.cancelButton,
+.saveButton {
+	@apply px-5 py-2.5 rounded-lg text-sm font-medium transition-all border-none cursor-pointer;
+}
+
+.cancelButton {
+	@apply bg-gray-100 text-gray-700;
+}
+
+.cancelButton:hover:not(:disabled) {
+	@apply bg-gray-200;
+}
+
+.saveButton {
+	@apply bg-blue-600 text-white;
+}
+
+.saveButton:hover:not(:disabled) {
+	@apply bg-blue-700;
+}
+
+.cancelButton:disabled,
+.saveButton:disabled {
+	@apply opacity-50 cursor-not-allowed;
+}

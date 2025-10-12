@@ -27,6 +27,9 @@ export default [
 				EventTarget: 'readonly',
 				Element: 'readonly',
 				Node: 'readonly',
+				fetch: 'readonly',
+				alert: 'readonly',
+				confirm: 'readonly',
 			},
 		},
 		plugins: {

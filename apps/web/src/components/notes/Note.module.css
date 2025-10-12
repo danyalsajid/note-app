@@ -16,8 +16,28 @@
 	@apply text-gray-800 whitespace-pre-wrap;
 }
 
+.menuContainer {
+	@apply relative ml-2;
+}
+
 .menuButton {
-	@apply ml-2 text-gray-400 hover:text-gray-600 transition;
+	@apply text-gray-400 hover:text-gray-600 transition p-1;
+}
+
+.dropdown {
+	@apply absolute right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-[120px];
+}
+
+.dropdownItem {
+	@apply w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2 transition;
+}
+
+.dropdownItem:first-child {
+	@apply rounded-t-lg;
+}
+
+.dropdownItem:last-child {
+	@apply rounded-b-lg;
 }
 
 .footer {

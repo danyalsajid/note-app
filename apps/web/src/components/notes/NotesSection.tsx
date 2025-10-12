@@ -1,5 +1,5 @@
 import { Show, For } from 'solid-js';
-import type { HierarchyNode } from '../../types';
+import type { HierarchyNode, Note as NoteType } from '../../types';
 import Note from './Note';
 import styles from './NotesSection.module.css';
 
@@ -7,6 +7,8 @@ interface NotesSectionProps {
 	selectedItem: HierarchyNode;
 	formatDate: (dateString: string) => string;
 	onAddNote: () => void;
+	onEditNote: (note: NoteType) => void;
+	onDeleteNote: (note: NoteType) => void;
 }
 
 export default function NotesSection(props: NotesSectionProps) {
@@ -53,7 +55,12 @@ export default function NotesSection(props: NotesSectionProps) {
 				<div class={styles.notesList}>
 					<For each={props.selectedItem.notes}>
 						{note => (
-							<Note note={note} formatDate={props.formatDate} />
+							<Note 
+								note={note} 
+								formatDate={props.formatDate}
+								onEdit={props.onEditNote}
+								onDelete={props.onDeleteNote}
+							/>
 						)}
 					</For>
 				</div>
