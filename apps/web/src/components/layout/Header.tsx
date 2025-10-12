@@ -1,4 +1,4 @@
-import { createSignal } from 'solid-js';
+import { createSignal, onCleanup } from 'solid-js';
 import styles from './Header.module.css';
 
 interface HeaderProps {
@@ -8,15 +8,36 @@ interface HeaderProps {
 
 export default function Header(props: HeaderProps) {
 	const [searchQuery, setSearchQuery] = createSignal('');
+	let debounceTimeout: any;
+
+	// Cleanup timeout on component unmount
+	onCleanup(() => {
+		if (debounceTimeout) {
+			clearTimeout(debounceTimeout);
+		}
+	});
 
 	const handleSearchInput = (e: Event) => {
 		const value = (e.target as HTMLInputElement).value;
 		setSearchQuery(value);
-		props.onSearch(value);
+
+		// Clear existing timeout
+		if (debounceTimeout) {
+			clearTimeout(debounceTimeout);
+		}
+
+		// Set new timeout for debounced search
+		debounceTimeout = setTimeout(() => {
+			props.onSearch(value);
+		}, 300); // 300ms debounce delay
 	};
 
 	const handleSearchSubmit = (e: Event) => {
 		e.preventDefault();
+		// Clear timeout and execute search immediately on form submit
+		if (debounceTimeout) {
+			clearTimeout(debounceTimeout);
+		}
 		props.onSearch(searchQuery());
 	};
 
