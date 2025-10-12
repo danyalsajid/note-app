@@ -1,4 +1,4 @@
-import { Show, createEffect, createSignal } from 'solid-js';
+import { Show, For, createEffect, createSignal } from 'solid-js';
 import { useParams, useNavigate } from '@solidjs/router';
 import NotesSection from './NotesSection';
 import ItemHeader from '../tree/ItemHeader';
@@ -158,7 +158,7 @@ export default function MainContent() {
 
 	return (
 		<main class={styles.main}>
-			<Show when={navigation.selectedItemLoading()}>
+			<Show when={navigation.selectedItemLoading() || navigation.isSearching()}>
 				<div class={styles.centerContent}>
 					<div class={styles.loading}>Loading...</div>
 				</div>
@@ -170,10 +170,80 @@ export default function MainContent() {
 				</div>
 			</Show>
 
+			{/* Show search results when searching */}
+			<Show when={navigation.searchQuery() && !navigation.isSearching() && !navigation.error()}>
+				<div class={styles.contentWrapper}>
+					<div class={styles.searchHeader}>
+						<h1 class={styles.searchTitle}>
+							<i class="fas fa-search text-gray-600 mr-3" />
+							Search Results for "{navigation.searchQuery()}"
+						</h1>
+						<button
+							class={styles.clearButton}
+							onClick={() => navigation.clearSearch()}
+						>
+							<i class="fas fa-times mr-2" />
+							Clear Search
+						</button>
+					</div>
+					<Show
+						when={navigation.searchResults().length > 0}
+						fallback={
+							<div class={styles.emptyState}>
+								<div class={styles.emptyIcon}>
+									<i class="fas fa-search text-6xl text-gray-300" />
+								</div>
+								<p class={styles.emptyText}>
+									No notes found matching "{navigation.searchQuery()}"
+								</p>
+							</div>
+						}
+					>
+						<div class={styles.searchResults}>
+							<For each={navigation.searchResults()}>
+								{(note: Note) => (
+									<div 
+										class={styles.searchResultItem}
+										onClick={() => {
+											navigation.clearSearch();
+											navigate(`/item/${note.attachedToId}`);
+										}}
+									>
+										<div class={styles.noteCard}>
+											<div class={styles.noteContent}>
+												{note.content}
+											</div>
+											<div class={styles.noteMeta}>
+												<span class={styles.noteDate}>
+													<i class="fas fa-calendar-alt mr-2" />
+													{formatDate(note.createdAt)}
+												</span>
+												<Show when={note.tags}>
+													<div class={styles.noteTags}>
+														<For each={JSON.parse(note.tags || '[]')}>
+															{(tag: string) => (
+																<span class={styles.noteTag}>
+																	{tag}
+																</span>
+															)}
+														</For>
+													</div>
+												</Show>
+											</div>
+										</div>
+									</div>
+								)}
+							</For>
+						</div>
+					</Show>
+				</div>
+			</Show>
+
+			{/* Show regular content when not searching */}
 			<Show
-				when={!navigation.selectedItemLoading() && !navigation.error() && navigation.selectedItem()}
+				when={!navigation.searchQuery() && !navigation.selectedItemLoading() && !navigation.error() && navigation.selectedItem()}
 				fallback={
-					<Show when={!navigation.selectedItemLoading() && !navigation.error()}>
+					<Show when={!navigation.searchQuery() && !navigation.selectedItemLoading() && !navigation.error()}>
 						<div class={styles.emptyState}>
 							<div class={styles.emptyIcon}>
 								<i class="fas fa-mouse-pointer text-6xl text-gray-300" />

@@ -2,11 +2,13 @@ import { type Component } from 'solid-js';
 import Header from '../components/layout/Header';
 import Sidebar from '../components/layout/Sidebar';
 import MainContent from '../components/notes/MainContent';
+import { useNavigation } from '../contexts';
 
 const HomePage: Component = () => {
-	const handleSearch = (query: string) => {
-		console.log('Searching for:', query);
-		// TODO: Implement search functionality
+	const navigation = useNavigation();
+
+	const handleSearch = async (query: string) => {
+		await navigation.searchNotes(query);
 	};
 
 	const handleLogout = () => {

@@ -1,6 +1,6 @@
 import { db } from '../../db/index.js';
 import { notes } from '../../db/schema.js';
-import { eq } from 'drizzle-orm';
+import { eq, like, or } from 'drizzle-orm';
 import type { Request, Response } from 'express';
 import type {
 	CreateNoteBody,
@@ -122,5 +122,32 @@ export async function deleteNote(req: Request<{ id: string }>, res: Response) {
 	} catch (error) {
 		console.error('Error deleting note:', error);
 		res.status(500).json({ error: 'Failed to delete note' });
+	}
+}
+
+// GET /api/notes/search?q=query - Search notes
+export async function searchNotes(req: Request, res: Response) {
+	try {
+		const query = req.query.q as string;
+
+		if (!query || query.trim() === '') {
+			return res.json([]);
+		}
+
+		const searchPattern = `%${query}%`;
+		const searchResults = await db
+			.select()
+			.from(notes)
+			.where(
+				or(
+					like(notes.content, searchPattern),
+					like(notes.tags, searchPattern)
+				)
+			);
+
+		res.json(searchResults);
+	} catch (error) {
+		console.error('Error searching notes:', error);
+		res.status(500).json({ error: 'Failed to search notes' });
 	}
 }

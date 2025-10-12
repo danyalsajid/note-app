@@ -65,4 +65,21 @@ export const notesService = {
 		}
 		return response.json();
 	},
+
+	/**
+	 * Search notes by query
+	 */
+	async searchNotes(query: string): Promise<Note[]> {
+		if (!query || query.trim() === '') {
+			return [];
+		}
+		const response = await fetch(
+			`${API_BASE_URL}/notes/search?q=${encodeURIComponent(query)}`
+		);
+		if (!response.ok) {
+			const error = await response.json();
+			throw new Error(error.message || 'Failed to search notes');
+		}
+		return response.json();
+	},
 };

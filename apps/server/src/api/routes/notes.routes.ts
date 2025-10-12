@@ -5,9 +5,13 @@ import {
 	getNoteById,
 	updateNote,
 	deleteNote,
+	searchNotes,
 } from '../controllers/notes.controller.js';
 
 const router = express.Router();
+
+// GET /api/notes/search - Search notes (must be before /:id route)
+router.get('/notes/search', searchNotes);
 
 // GET /api/notes - Get all notes
 router.get('/notes', getAllNotes);

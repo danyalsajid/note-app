@@ -1,7 +1,8 @@
 import { createContext, useContext, ParentComponent } from 'solid-js';
 import { createSignal } from 'solid-js';
-import type { Organisation, HierarchyNode } from '../types';
+import type { Organisation, HierarchyNode, Note } from '../types';
 import { hierarchyService } from '../services/hierarchyService';
+import { notesService } from '../services/notesService';
 
 /**
  * Navigation Context Type Definition
@@ -13,6 +14,9 @@ type NavigationContextType = {
 	error: () => string | null;
 	selectedItem: () => HierarchyNode | null;
 	selectedItemLoading: () => boolean;
+	searchResults: () => Note[];
+	searchQuery: () => string;
+	isSearching: () => boolean;
 	
 	// Actions
 	fetchHierarchyTree: () => Promise<void>;
@@ -29,6 +33,8 @@ type NavigationContextType = {
 	) => Promise<void>;
 	deleteHierarchyItem: (id: string) => Promise<void>;
 	clearSelectedItem: () => void;
+	searchNotes: (query: string) => Promise<void>;
+	clearSearch: () => void;
 };
 
 /**
@@ -46,6 +52,9 @@ export const NavigationProvider: ParentComponent = (props) => {
 	const [error, setError] = createSignal<string | null>(null);
 	const [selectedItem, setSelectedItem] = createSignal<HierarchyNode | null>(null);
 	const [selectedItemLoading, setSelectedItemLoading] = createSignal(false);
+	const [searchResults, setSearchResults] = createSignal<Note[]>([]);
+	const [searchQuery, setSearchQuery] = createSignal('');
+	const [isSearching, setIsSearching] = createSignal(false);
 
 	/**
 	 * Fetch the complete hierarchy tree
@@ -132,6 +141,40 @@ export const NavigationProvider: ParentComponent = (props) => {
 		setSelectedItem(null);
 	};
 
+	/**
+	 * Search notes by query
+	 */
+	const searchNotes = async (query: string) => {
+		setSearchQuery(query);
+		
+		if (!query || query.trim() === '') {
+			setSearchResults([]);
+			setIsSearching(false);
+			return;
+		}
+
+		setIsSearching(true);
+		setError(null);
+		try {
+			const results = await notesService.searchNotes(query);
+			setSearchResults(results);
+		} catch (err) {
+			setError(err instanceof Error ? err.message : 'Failed to search notes');
+			setSearchResults([]);
+		} finally {
+			setIsSearching(false);
+		}
+	};
+
+	/**
+	 * Clear search results
+	 */
+	const clearSearch = () => {
+		setSearchQuery('');
+		setSearchResults([]);
+		setIsSearching(false);
+	};
+
 	// Context value
 	const contextValue: NavigationContextType = {
 		// State
@@ -140,6 +183,9 @@ export const NavigationProvider: ParentComponent = (props) => {
 		error,
 		selectedItem,
 		selectedItemLoading,
+		searchResults,
+		searchQuery,
+		isSearching,
 		
 		// Actions
 		fetchHierarchyTree,
@@ -148,6 +194,8 @@ export const NavigationProvider: ParentComponent = (props) => {
 		updateHierarchyItem,
 		deleteHierarchyItem,
 		clearSelectedItem,
+		searchNotes,
+		clearSearch,
 	};
 
 	return (
