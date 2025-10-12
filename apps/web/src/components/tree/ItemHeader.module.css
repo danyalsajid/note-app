@@ -39,3 +39,27 @@
 .metadataValueMono {
 	@apply text-gray-900 font-mono text-sm;
 }
+
+.menuContainer {
+	@apply relative;
+}
+
+.menuButton {
+	@apply p-2 rounded-lg bg-white cursor-pointer;
+	@apply text-gray-600 hover:text-gray-800;
+}
+
+.dropdown {
+	@apply absolute right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-10;
+	@apply min-w-32;
+}
+
+.dropdownItem {
+	@apply w-full px-4 py-2 text-left text-sm hover:bg-gray-50 transition-colors;
+	@apply flex items-center gap-2 text-gray-700 hover:text-gray-900;
+	@apply border-none bg-transparent cursor-pointer;
+}
+
+.dropdownItem:hover {
+	@apply bg-gray-50;
+}

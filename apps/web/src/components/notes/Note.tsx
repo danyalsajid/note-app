@@ -1,4 +1,4 @@
-import { Show, For, createSignal } from 'solid-js';
+import { Show, For, createSignal, onMount, onCleanup } from 'solid-js';
 import type { Note as NoteType } from '../../types';
 import { parseTags } from '../../utils';
 import styles from './Note.module.css';
@@ -12,7 +12,7 @@ interface NoteProps {
 
 export default function Note(props: NoteProps) {
 	const [showMenu, setShowMenu] = createSignal(false);
-	const tags = () => parseTags(props.note.tags);
+	let menuContainerRef: HTMLDivElement | undefined;
 
 	const handleEdit = () => {
 		setShowMenu(false);
@@ -26,6 +26,26 @@ export default function Note(props: NoteProps) {
 		}
 	};
 
+	const handleClickOutside = (event: Event) => {
+		if (menuContainerRef && !menuContainerRef.contains(event.target as Node)) {
+			setShowMenu(false);
+		}
+	};
+
+	onMount(() => {
+		if (typeof window !== 'undefined') {
+			document.addEventListener('click', handleClickOutside);
+		}
+	});
+
+	onCleanup(() => {
+		if (typeof window !== 'undefined') {
+			document.removeEventListener('click', handleClickOutside);
+		}
+	});
+
+	const tags = () => parseTags(props.note.tags);
+
 	return (
 		<div class={styles.container}>
 			<div class={styles.header}>
@@ -34,7 +54,7 @@ export default function Note(props: NoteProps) {
 						{props.note.content}
 					</p>
 				</div>
-				<div class={styles.menuContainer}>
+				<div class={styles.menuContainer} ref={menuContainerRef}>
 					<button 
 						class={styles.menuButton}
 						onClick={() => setShowMenu(!showMenu())}

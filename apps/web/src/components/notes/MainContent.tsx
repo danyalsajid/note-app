@@ -1,11 +1,13 @@
 import { Show, createEffect, createSignal } from 'solid-js';
-import { useParams } from '@solidjs/router';
+import { useParams, useNavigate } from '@solidjs/router';
 import NotesSection from './NotesSection';
 import ItemHeader from '../tree/ItemHeader';
 import NoteModal from '../ui/NoteModal';
+import HierarchyItemModal from '../ui/HierarchyItemModal';
 import { useNavigation } from '../../contexts';
 import { notesService } from '../../services/notesService';
-import type { Note } from '../../types';
+import { hierarchyService } from '../../services/hierarchyService';
+import type { Note, HierarchyNode } from '../../types';
 import {
 	getTypeLabel,
 	getTypeColor,
@@ -17,9 +19,13 @@ import styles from './MainContent.module.css';
 export default function MainContent() {
 	const params = useParams();
 	const navigation = useNavigation();
+	const navigate = useNavigate();
 	const [isModalOpen, setIsModalOpen] = createSignal(false);
+	const [isHierarchyModalOpen, setIsHierarchyModalOpen] = createSignal(false);
 	const [editingNote, setEditingNote] = createSignal<Note | null>(null);
+	const [editingHierarchyItem, setEditingHierarchyItem] = createSignal<HierarchyNode | null>(null);
 	const [isSaving, setIsSaving] = createSignal(false);
+	const [isHierarchySaving, setIsHierarchySaving] = createSignal(false);
 
 	// Fetch item when params.id changes
 	createEffect(() => {
@@ -101,6 +107,55 @@ export default function MainContent() {
 		setEditingNote(null);
 	};
 
+	const handleEditHierarchyItem = (item: HierarchyNode) => {
+		setEditingHierarchyItem(item);
+		setIsHierarchyModalOpen(true);
+	};
+
+	const handleDeleteHierarchyItem = (item: HierarchyNode) => {
+		if (confirm(`Are you sure you want to delete this ${item.type}? This action cannot be undone.`)) {
+			handleConfirmDelete(item);
+		}
+	};
+
+	const handleConfirmDelete = async (item: HierarchyNode) => {
+		try {
+			await navigation.deleteHierarchyItem(item.id);
+			// Navigate back to home page
+			navigate('/');
+		} catch (error) {
+			console.error('Failed to delete hierarchy item:', error);
+			alert('Failed to delete item. Please try again.');
+		}
+	};
+
+	const handleSaveHierarchyItem = async (name: string) => {
+		const item = editingHierarchyItem();
+		if (!item) return;
+
+		setIsHierarchySaving(true);
+		try {
+			await hierarchyService.updateHierarchyItem(item.id, { name });
+			// Refresh the current item to update the name
+			const currentId = params.id;
+			if (currentId) {
+				await navigation.fetchHierarchyItem(currentId);
+			}
+			setIsHierarchyModalOpen(false);
+			setEditingHierarchyItem(null);
+		} catch (error) {
+			console.error('Failed to save hierarchy item:', error);
+			alert('Failed to save item. Please try again.');
+		} finally {
+			setIsHierarchySaving(false);
+		}
+	};
+
+	const handleCloseHierarchyModal = () => {
+		setIsHierarchyModalOpen(false);
+		setEditingHierarchyItem(null);
+	};
+
 	return (
 		<main class={styles.main}>
 			<Show when={navigation.selectedItemLoading()}>
@@ -141,6 +196,8 @@ export default function MainContent() {
 						getTypeColor={getTypeColor}
 						getTypeLabel={getTypeLabel}
 						formatDate={formatDate}
+						onEdit={handleEditHierarchyItem}
+						onDelete={handleDeleteHierarchyItem}
 					/>
 
 					{/* Notes Section */}
@@ -161,6 +218,15 @@ export default function MainContent() {
 				onSave={handleSaveNote}
 				note={editingNote()}
 				isLoading={isSaving()}
+			/>
+
+			{/* Hierarchy Item Modal */}
+			<HierarchyItemModal
+				isOpen={isHierarchyModalOpen()}
+				onClose={handleCloseHierarchyModal}
+				onSave={handleSaveHierarchyItem}
+				item={editingHierarchyItem()}
+				isLoading={isHierarchySaving()}
 			/>
 		</main>
 	);

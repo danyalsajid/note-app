@@ -21,7 +21,7 @@
 }
 
 .menuButton {
-	@apply text-gray-400 hover:text-gray-600 transition p-1;
+	@apply text-gray-400 hover:text-gray-600 transition p-1 cursor-pointer;
 }
 
 .dropdown {
