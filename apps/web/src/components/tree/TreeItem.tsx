@@ -1,6 +1,7 @@
 import { For, Show } from 'solid-js';
 import type { Organisation, Team, Client, Episode } from '../../types';
 import { NODE_CONFIG } from '../../utils';
+import styles from './TreeItem.module.css';
 
 // Generic Tree Item Component Props
 interface TreeItemProps {
@@ -33,17 +34,13 @@ export default function TreeItem(props: TreeItemProps) {
 	const isSelected = () => props.selectedItemId === props.item.id;
 
 	return (
-		<div class="space-y-1">
+		<div class={styles.wrapper}>
 			<div
-				class={`flex items-center justify-between py-3 pr-2 rounded group cursor-pointer transition-colors ${
-					isSelected()
-						? 'bg-blue-100 hover:bg-blue-200'
-						: 'hover:bg-gray-50'
-				}`}
+				class={`${styles.item} group ${isSelected() ? styles.itemSelected : styles.itemDefault}`}
 				style={{ 'padding-left': `${0.5 + paddingLeft()}rem` }}
 				onClick={() => props.onNavigate(`/item/${props.item.id}`)}
 			>
-				<div class="flex items-center gap-3">
+				<div class={styles.itemContent}>
 					<i
 						class={config().icon}
 						style={{
@@ -52,7 +49,7 @@ export default function TreeItem(props: TreeItemProps) {
 						}}
 					/>
 					<span
-						class={`font-normal ${isSelected() ? 'text-blue-900 font-medium' : 'text-gray-700'}`}
+						class={isSelected() ? styles.itemTextSelected : styles.itemText}
 					>
 						{props.item.name}
 					</span>
@@ -66,7 +63,7 @@ export default function TreeItem(props: TreeItemProps) {
 								config().childType!
 							);
 						}}
-						class="w-8 h-8 flex items-center justify-center border border-gray-300 rounded text-gray-600 hover:bg-gray-100 transition opacity-100"
+						class={styles.addButton}
 						title={`Add ${config().childType}`}
 					>
 						+

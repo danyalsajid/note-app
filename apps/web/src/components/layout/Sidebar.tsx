@@ -9,6 +9,7 @@ import {
 	fetchHierarchyTree,
 	createHierarchyItem,
 } from '../../stores';
+import styles from './Sidebar.module.css';
 
 export default function Sidebar() {
 	const navigate = useNavigate();
@@ -147,41 +148,41 @@ export default function Sidebar() {
 		return null;
 	};
 
-	return (
+		return (
 		<>
-			<div class="w-[432px] h-screen bg-white border-r border-gray-200 overflow-y-auto">
-				<div class="p-4">
+			<div class={styles.container}>
+				<div class={styles.padding}>
 					{/* Header */}
-					<div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
-						<div class="flex items-center gap-3">
-							<h3 class="text-2xl font-semibold text-gray-900">
+					<div class={styles.header}>
+						<div class={styles.headerContent}>
+							<h3 class={styles.title}>
 								Organizations
 							</h3>
 						</div>
 						<button
 							onClick={handleAddOrganisation}
-							class="px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded hover:bg-blue-700 transition flex items-center gap-1.5"
+							class={styles.addButton}
 							title="Add Organisation"
 						>
-							<span class="text-base leading-none">+</span>
+							<span class={styles.addButtonIcon}>+</span>
 							<span>Add Org</span>
 						</button>
 					</div>
 
 					<Show when={loading()}>
-						<div class="text-gray-500 text-center py-8">
+						<div class={styles.loading}>
 							Loading...
 						</div>
 					</Show>
 
 					<Show when={error()}>
-						<div class="text-red-500 text-center py-8">
+						<div class={styles.error}>
 							{error()}
 						</div>
 					</Show>
 
 					<Show when={!loading() && !error()}>
-						<div class="space-y-1">
+						<div class={styles.content}>
 							<For each={organisations()}>
 								{org => (
 									<TreeItem

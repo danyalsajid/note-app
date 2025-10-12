@@ -1,0 +1,37 @@
+@reference 'tailwindcss';
+
+.container {
+	@apply bg-white rounded-lg shadow-sm border border-gray-200 p-6;
+}
+
+.header {
+	@apply flex items-center justify-between mb-4;
+}
+
+.title {
+	@apply text-xl font-semibold text-gray-900 flex items-center gap-2;
+}
+
+.count {
+	@apply text-sm font-normal text-gray-500;
+}
+
+.addButton {
+	@apply px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded hover:bg-blue-700 transition;
+}
+
+.empty {
+	@apply text-center py-12;
+}
+
+.emptyIcon {
+	@apply text-4xl text-gray-300 mb-3;
+}
+
+.emptyText {
+	@apply text-gray-500;
+}
+
+.notesList {
+	@apply space-y-4;
+}

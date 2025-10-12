@@ -1,0 +1,33 @@
+@reference 'tailwindcss';
+
+.wrapper {
+	@apply space-y-1;
+}
+
+.item {
+	@apply flex items-center justify-between py-3 pr-2 rounded cursor-pointer transition-colors;
+}
+
+.itemSelected {
+	@apply bg-blue-100 hover:bg-blue-200;
+}
+
+.itemDefault {
+	@apply hover:bg-gray-50;
+}
+
+.itemContent {
+	@apply flex items-center gap-3;
+}
+
+.itemText {
+	@apply font-normal text-gray-700;
+}
+
+.itemTextSelected {
+	@apply text-blue-900 font-medium;
+}
+
+.addButton {
+	@apply w-8 h-8 flex items-center justify-center border border-gray-300 rounded text-gray-600 hover:bg-gray-100 transition opacity-100;
+}

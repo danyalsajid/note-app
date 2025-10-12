@@ -1,6 +1,7 @@
 import { createSignal } from 'solid-js';
 import Modal from './Modal';
 import { capitalizeFirst } from '../../utils/helpers';
+import styles from './AddItemModal.module.css';
 
 interface AddItemModalProps {
 	isOpen: boolean;
@@ -34,18 +35,18 @@ export default function AddItemModal(props: AddItemModalProps) {
 		props.onClose();
 	};
 
-	return (
+		return (
 		<Modal
 			isOpen={props.isOpen}
 			onClose={handleClose}
 			title={`Add New ${capitalizeFirst(props.itemType)}`}
 		>
-			<form onSubmit={handleSubmit} class="space-y-4">
+			<form onSubmit={handleSubmit} class={styles.form}>
 				<div>
 					{props.parentName && (
-						<p class="text-sm text-gray-600 mb-3">
+						<p class={styles.description}>
 							Add a new {capitalizeFirst(props.itemType)} under{' '}
-							{capitalizeFirst(props.parentType)} :{' '}
+							{capitalizeFirst(props.parentType || '')} :{' '}
 							{props.parentName}
 						</p>
 					)}
@@ -58,24 +59,24 @@ export default function AddItemModal(props: AddItemModalProps) {
 							setError('');
 						}}
 						placeholder={`Enter ${props.itemType.toLowerCase()} name`}
-						class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+						class={styles.input}
 					/>
 					{error() && (
-						<p class="mt-1 text-sm text-red-600">{error()}</p>
+						<p class={styles.error}>{error()}</p>
 					)}
 				</div>
 
-				<div class="flex justify-end gap-3 pt-2">
+				<div class={styles.actions}>
 					<button
 						type="button"
 						onClick={handleClose}
-						class="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition font-medium"
+						class={styles.cancelButton}
 					>
 						Cancel
 					</button>
 					<button
 						type="submit"
-						class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium"
+						class={styles.submitButton}
 					>
 						Add {capitalizeFirst(props.itemType)}
 					</button>

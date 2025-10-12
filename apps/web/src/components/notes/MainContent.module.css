@@ -1,0 +1,37 @@
+@reference 'tailwindcss';
+
+.main {
+	@apply flex-1 p-8 overflow-auto bg-gray-50;
+}
+
+.centerContent {
+	@apply flex items-center justify-center h-full;
+}
+
+.loading {
+	@apply text-gray-500 text-lg;
+}
+
+.error {
+	@apply text-red-500 text-lg;
+}
+
+.emptyState {
+	@apply flex flex-col items-center justify-center h-full text-center;
+}
+
+.emptyIcon {
+	@apply mb-4;
+}
+
+.emptyTitle {
+	@apply text-3xl text-gray-800 font-bold mb-2;
+}
+
+.emptyText {
+	@apply text-gray-600 text-lg;
+}
+
+.contentWrapper {
+	@apply max-w-4xl mx-auto;
+}

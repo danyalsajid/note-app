@@ -1,6 +1,7 @@
 import { Show, For } from 'solid-js';
 import type { HierarchyNode } from '../../types';
 import Note from './Note';
+import styles from './NotesSection.module.css';
 
 interface NotesSectionProps {
 	selectedItem: HierarchyNode;
@@ -10,9 +11,9 @@ interface NotesSectionProps {
 
 export default function NotesSection(props: NotesSectionProps) {
 	return (
-		<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-			<div class="flex items-center justify-between mb-4">
-				<h2 class="text-xl font-semibold text-gray-900 flex items-center gap-2">
+		<div class={styles.container}>
+			<div class={styles.header}>
+				<h2 class={styles.title}>
 					<i class="fas fa-sticky-note text-gray-600" />
 					Notes
 					<Show
@@ -21,13 +22,13 @@ export default function NotesSection(props: NotesSectionProps) {
 							props.selectedItem.notes!.length > 0
 						}
 					>
-						<span class="text-sm font-normal text-gray-500">
+						<span class={styles.count}>
 							({props.selectedItem.notes!.length})
 						</span>
 					</Show>
 				</h2>
 				<button
-					class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded hover:bg-blue-700 transition"
+					class={styles.addButton}
 					onClick={() => props.onAddNote()}
 				>
 					<i class="fas fa-plus mr-2" />
@@ -41,15 +42,15 @@ export default function NotesSection(props: NotesSectionProps) {
 					props.selectedItem.notes!.length > 0
 				}
 				fallback={
-					<div class="text-center py-12">
-						<i class="fas fa-file-alt text-4xl text-gray-300 mb-3" />
-						<p class="text-gray-500">
+					<div class={styles.empty}>
+						<i class={`fas fa-file-alt ${styles.emptyIcon}`} />
+						<p class={styles.emptyText}>
 							No notes yet. Add your first note to get started.
 						</p>
 					</div>
 				}
 			>
-				<div class="space-y-4">
+				<div class={styles.notesList}>
 					<For each={props.selectedItem.notes}>
 						{note => (
 							<Note note={note} formatDate={props.formatDate} />
