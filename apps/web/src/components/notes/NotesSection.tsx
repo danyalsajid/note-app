@@ -1,9 +1,9 @@
 import { Show, For } from 'solid-js';
-import type { Organisation, Team, Client, Episode } from '../types/hierarchy';
+import type { HierarchyNode } from '../../types';
 import Note from './Note';
 
 interface NotesSectionProps {
-	selectedItem: Organisation | Team | Client | Episode;
+	selectedItem: HierarchyNode;
 	formatDate: (dateString: string) => string;
 	onAddNote: () => void;
 }

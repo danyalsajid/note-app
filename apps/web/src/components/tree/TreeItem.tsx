@@ -1,37 +1,6 @@
 import { For, Show } from 'solid-js';
-import type { Organisation, Team, Client, Episode } from '../types/hierarchy';
-
-// Configuration for each node type
-const NODE_CONFIG = {
-	organisation: {
-		icon: 'fas fa-building',
-		color: '#ef4444',
-		fontSize: '1.25rem',
-		childType: 'team',
-		childrenKey: 'teams',
-	},
-	team: {
-		icon: 'fas fa-users',
-		color: '#3b82f6',
-		fontSize: '1.25rem',
-		childType: 'client',
-		childrenKey: 'clients',
-	},
-	client: {
-		icon: 'fas fa-user',
-		color: '#2563eb',
-		fontSize: '1.25rem',
-		childType: 'episode',
-		childrenKey: 'episodes',
-	},
-	episode: {
-		icon: 'fas fa-file-alt',
-		color: '#ca8a04',
-		fontSize: '1.15rem',
-		childType: null,
-		childrenKey: null,
-	},
-} as const;
+import type { Organisation, Team, Client, Episode } from '../../types';
+import { NODE_CONFIG } from '../../utils';
 
 // Generic Tree Item Component Props
 interface TreeItemProps {

@@ -1,9 +1,9 @@
 import { type Component } from 'solid-js';
-import Header from './Header';
-import Sidebar from './Sidebar';
-import MainContent from './mainContent';
+import Header from '../components/layout/Header';
+import Sidebar from '../components/layout/Sidebar';
+import MainContent from '../components/notes/MainContent';
 
-const Layout: Component = () => {
+const HomePage: Component = () => {
 	const handleSearch = (query: string) => {
 		console.log('Searching for:', query);
 		// TODO: Implement search functionality
@@ -25,4 +25,4 @@ const Layout: Component = () => {
 	);
 };
 
-export default Layout;
+export default HomePage;

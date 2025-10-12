@@ -1,7 +1,7 @@
-import type { Organisation, Team, Client, Episode } from '../types/hierarchy';
+import type { HierarchyNode } from '../../types';
 
 interface ItemHeaderProps {
-	selectedItem: Organisation | Team | Client | Episode;
+	selectedItem: HierarchyNode;
 	getTypeIcon: (type: string) => string;
 	getTypeColor: (type: string) => string;
 	getTypeLabel: (type: string) => string;

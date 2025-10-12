@@ -1,26 +1,21 @@
-import { createSignal, onMount, For, Show } from 'solid-js';
-import type { Organisation } from '../types/hierarchy';
-import { hierarchyService } from '../services/hierarchyService';
+import { onMount, For, Show } from 'solid-js';
 import { useNavigate, useParams } from '@solidjs/router';
-import TreeItem from './TreeItem';
+import TreeItem from '../tree/TreeItem';
+import {
+	organisations,
+	loading,
+	error,
+	fetchHierarchyTree,
+	createHierarchyItem,
+} from '../../stores';
 
 export default function Sidebar() {
 	const navigate = useNavigate();
 	const params = useParams();
-	const [organisations, setOrganisations] = createSignal<Organisation[]>([]);
-	const [loading, setLoading] = createSignal(true);
-	const [error, setError] = createSignal<string | null>(null);
 
 	// Fetch hierarchy on component mount
-	onMount(async () => {
-		try {
-			const data = await hierarchyService.getHierarchyTree();
-			setOrganisations(data.organisations);
-			setLoading(false);
-		} catch (err) {
-			setError(err instanceof Error ? err.message : 'Failed to load hierarchy');
-			setLoading(false);
-		}
+	onMount(() => {
+		fetchHierarchyTree();
 	});
 
 	const handleAddChild = async (parentId: string, childType: string) => {
@@ -29,15 +24,12 @@ export default function Sidebar() {
 
 		try {
 			const id = `${childType}-${Date.now()}`;
-			await hierarchyService.createHierarchyItem({
+			await createHierarchyItem({
 				id,
 				type: childType,
 				name,
 				parentId,
 			});
-			// Refresh hierarchy
-			const data = await hierarchyService.getHierarchyTree();
-			setOrganisations(data.organisations);
 		} catch (err) {
 			alert(err instanceof Error ? err.message : 'Failed to create item');
 		}
@@ -49,14 +41,11 @@ export default function Sidebar() {
 
 		try {
 			const id = `organisation-${Date.now()}`;
-			await hierarchyService.createHierarchyItem({
+			await createHierarchyItem({
 				id,
 				type: 'organisation',
 				name,
 			});
-			// Refresh hierarchy
-			const data = await hierarchyService.getHierarchyTree();
-			setOrganisations(data.organisations);
 		} catch (err) {
 			alert(err instanceof Error ? err.message : 'Failed to create organisation');
 		}

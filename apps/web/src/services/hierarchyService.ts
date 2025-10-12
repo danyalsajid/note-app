@@ -1,20 +1,12 @@
-import type { HierarchyResponse, CreateHierarchyItemBody, HierarchyNode } from '../types/hierarchy';
+import type {
+	HierarchyResponse,
+	CreateHierarchyItemBody,
+	HierarchyNode,
+	ApiResponse,
+	DeleteResponse,
+} from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
-
-interface ApiResponse<T> {
-	message: string;
-	node?: T;
-}
-
-interface DeleteResponse {
-	message: string;
-	deleted: {
-		node: HierarchyNode;
-		descendantsCount: number;
-		descendants: HierarchyNode[];
-	};
-}
 
 export const hierarchyService = {
 	/**
