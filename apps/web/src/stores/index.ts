@@ -3,4 +3,3 @@
  */
 
 export * from './navigationStore';
-export * from './notesStore';
