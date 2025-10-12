@@ -18,6 +18,48 @@ import {
 	VALID_HIERARCHY_TYPES,
 } from '../../types/hierarchy.types.js';
 
+// Get single hierarchy item by ID with notes
+export async function getHierarchyItem(req: Request<{ id: string }>, res: Response) {
+	try {
+		const { id } = req.params;
+
+		// Get the node
+		const node = await db
+			.select()
+			.from(hierarchyNodes)
+			.where(eq(hierarchyNodes.id, id))
+			.limit(1);
+
+		if (node.length === 0) {
+			return res.status(404).json({
+				error: 'Not found',
+				message: `Hierarchy item with ID ${id} not found`,
+			});
+		}
+
+		// Get full notes attached to this item
+		const itemNotes = await db
+			.select()
+			.from(notes)
+			.where(eq(notes.attachedToId, id));
+
+		const noteIds = itemNotes.map(note => note.id);
+
+		// Return the node with noteIds and full notes
+		res.status(200).json({
+			...node[0],
+			noteIds,
+			notes: itemNotes,
+		});
+	} catch (error) {
+		console.error('Error fetching hierarchy item:', error);
+		res.status(500).json({
+			error: 'Failed to fetch hierarchy item',
+			message: error instanceof Error ? error.message : 'Unknown error',
+		});
+	}
+}
+
 // API endpoint handler
 export async function getHierarchyTree(req: Request, res: Response) {
 	try {
