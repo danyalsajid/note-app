@@ -19,7 +19,10 @@ import {
 } from '../../types/hierarchy.types.js';
 
 // Get single hierarchy item by ID with notes
-export async function getHierarchyItem(req: Request<{ id: string }>, res: Response) {
+export async function getHierarchyItem(
+	req: Request<{ id: string }>,
+	res: Response
+) {
 	try {
 		const { id } = req.params;
 
@@ -208,7 +211,10 @@ export async function getHierarchyTree(req: Request, res: Response) {
 }
 
 // Create hierarchy item
-export async function createHierarchyItem(req: Request<object, object, CreateHierarchyItemBody>, res: Response) {
+export async function createHierarchyItem(
+	req: Request<object, object, CreateHierarchyItemBody>,
+	res: Response
+) {
 	try {
 		const { id, type, name, parentId } = req.body;
 
@@ -261,7 +267,12 @@ export async function createHierarchyItem(req: Request<object, object, CreateHie
 			// Validate parent-child type relationship
 			const parentNode = parent[0];
 			const expectedParentType = VALID_PARENT_TYPES[type];
-			if (type !== 'organisation' && expectedParentType && parentNode && parentNode.type !== expectedParentType) {
+			if (
+				type !== 'organisation' &&
+				expectedParentType &&
+				parentNode &&
+				parentNode.type !== expectedParentType
+			) {
 				return res.status(400).json({
 					error: 'Invalid parent type',
 					message: `${type} must have a parent of type ${expectedParentType}, but got ${parentNode.type}`,
@@ -342,7 +353,10 @@ export async function createHierarchyItem(req: Request<object, object, CreateHie
 }
 
 // Update hierarchy item
-export async function updateHierarchyItem(req: Request<{ id: string }, object, UpdateHierarchyItemBody>, res: Response) {
+export async function updateHierarchyItem(
+	req: Request<{ id: string }, object, UpdateHierarchyItemBody>,
+	res: Response
+) {
 	try {
 		const { id } = req.params;
 		const { name, type } = req.body;
@@ -400,7 +414,12 @@ export async function updateHierarchyItem(req: Request<{ id: string }, object, U
 			if (parentRelation.length > 0) {
 				const parentRel = parentRelation[0];
 				const expectedParentType = VALID_PARENT_TYPES[type];
-				if (type !== 'organisation' && expectedParentType && parentRel && parentRel.parentType !== expectedParentType) {
+				if (
+					type !== 'organisation' &&
+					expectedParentType &&
+					parentRel &&
+					parentRel.parentType !== expectedParentType
+				) {
 					return res.status(400).json({
 						error: 'Invalid type change',
 						message: `Cannot change type to ${type} because parent is of type ${parentRel.parentType}`,
@@ -410,9 +429,10 @@ export async function updateHierarchyItem(req: Request<{ id: string }, object, U
 		}
 
 		// Build update object
-		const updateData: { name?: string; type?: string; updatedAt: string } = {
-			updatedAt: new Date().toISOString(),
-		};
+		const updateData: { name?: string; type?: string; updatedAt: string } =
+			{
+				updatedAt: new Date().toISOString(),
+			};
 
 		if (name) updateData.name = name;
 		if (type) updateData.type = type;
@@ -444,7 +464,10 @@ export async function updateHierarchyItem(req: Request<{ id: string }, object, U
 }
 
 // Delete hierarchy item with cascading delete
-export async function deleteHierarchyItem(req: Request<{ id: string }>, res: Response) {
+export async function deleteHierarchyItem(
+	req: Request<{ id: string }>,
+	res: Response
+) {
 	try {
 		const { id } = req.params;
 
@@ -498,4 +521,3 @@ export async function deleteHierarchyItem(req: Request<{ id: string }>, res: Res
 		});
 	}
 }
-

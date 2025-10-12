@@ -15,7 +15,12 @@ export default function NotesSection(props: NotesSectionProps) {
 				<h2 class="text-xl font-semibold text-gray-900 flex items-center gap-2">
 					<i class="fas fa-sticky-note text-gray-600" />
 					Notes
-					<Show when={props.selectedItem.notes && props.selectedItem.notes!.length > 0}>
+					<Show
+						when={
+							props.selectedItem.notes &&
+							props.selectedItem.notes!.length > 0
+						}
+					>
 						<span class="text-sm font-normal text-gray-500">
 							({props.selectedItem.notes!.length})
 						</span>
@@ -31,17 +36,24 @@ export default function NotesSection(props: NotesSectionProps) {
 			</div>
 
 			<Show
-				when={props.selectedItem.notes && props.selectedItem.notes!.length > 0}
+				when={
+					props.selectedItem.notes &&
+					props.selectedItem.notes!.length > 0
+				}
 				fallback={
 					<div class="text-center py-12">
 						<i class="fas fa-file-alt text-4xl text-gray-300 mb-3" />
-						<p class="text-gray-500">No notes yet. Add your first note to get started.</p>
+						<p class="text-gray-500">
+							No notes yet. Add your first note to get started.
+						</p>
 					</div>
 				}
 			>
 				<div class="space-y-4">
 					<For each={props.selectedItem.notes}>
-						{(note) => <Note note={note} formatDate={props.formatDate} />}
+						{note => (
+							<Note note={note} formatDate={props.formatDate} />
+						)}
 					</For>
 				</div>
 			</Show>

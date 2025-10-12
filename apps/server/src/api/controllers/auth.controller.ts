@@ -4,24 +4,33 @@ import jwt from 'jsonwebtoken';
 import { db } from '../../db/index.js';
 import { users } from '../../db/schema.js';
 import { eq } from 'drizzle-orm';
-import { generateId, getJWTSecret, getAdminPasscode } from '../../utils/auth.js';
-import type { 
-	AuthRequest, 
-	LoginRequestBody, 
-	SignupRequestBody
+import {
+	generateId,
+	getJWTSecret,
+	getAdminPasscode,
+} from '../../utils/auth.js';
+import type {
+	AuthRequest,
+	LoginRequestBody,
+	SignupRequestBody,
 } from '../../types/auth.types.js';
 
 /**
  * POST /api/auth/login
  * Authenticate user and return JWT token
  */
-export async function login(req: Request<object, object, LoginRequestBody>, res: Response): Promise<void> {
+export async function login(
+	req: Request<object, object, LoginRequestBody>,
+	res: Response
+): Promise<void> {
 	try {
 		const { username, password } = req.body;
 
 		// Validation
 		if (!username || !password) {
-			res.status(400).json({ error: 'Username and password are required' });
+			res.status(400).json({
+				error: 'Username and password are required',
+			});
 			return;
 		}
 
@@ -54,7 +63,7 @@ export async function login(req: Request<object, object, LoginRequestBody>, res:
 				id: user.id,
 				username: user.username,
 				role: user.role,
-				name: user.name
+				name: user.name,
 			},
 			JWT_SECRET,
 			{ expiresIn: '24h' }
@@ -66,7 +75,7 @@ export async function login(req: Request<object, object, LoginRequestBody>, res:
 
 		res.json({
 			token,
-			user: userWithoutPassword
+			user: userWithoutPassword,
 		});
 	} catch (error) {
 		console.error('Login error:', error);
@@ -78,20 +87,28 @@ export async function login(req: Request<object, object, LoginRequestBody>, res:
  * POST /api/auth/signup
  * Register a new user
  */
-export async function signup(req: Request<object, object, SignupRequestBody>, res: Response): Promise<void> {
+export async function signup(
+	req: Request<object, object, SignupRequestBody>,
+	res: Response
+): Promise<void> {
 	try {
-		const { username, password, email, name, role, adminPasscode } = req.body;
+		const { username, password, email, name, role, adminPasscode } =
+			req.body;
 
 		// Validation
 		if (!username || !password || !email || !name) {
-			res.status(400).json({ error: 'Username, password, email, and name are required' });
+			res.status(400).json({
+				error: 'Username, password, email, and name are required',
+			});
 			return;
 		}
 
 		// Role validation - only allow admin and clinician
 		const allowedRoles = ['admin', 'clinician'];
 		if (role && !allowedRoles.includes(role.toLowerCase())) {
-			res.status(400).json({ error: 'Invalid role. Only admin and clinician roles are allowed' });
+			res.status(400).json({
+				error: 'Invalid role. Only admin and clinician roles are allowed',
+			});
 			return;
 		}
 
@@ -99,7 +116,9 @@ export async function signup(req: Request<object, object, SignupRequestBody>, re
 		const ADMIN_PASSCODE = getAdminPasscode();
 		if (role && role.toLowerCase() === 'admin') {
 			if (!adminPasscode) {
-				res.status(400).json({ error: 'Admin passcode is required for administrator accounts' });
+				res.status(400).json({
+					error: 'Admin passcode is required for administrator accounts',
+				});
 				return;
 			}
 			if (adminPasscode !== ADMIN_PASSCODE) {
@@ -110,14 +129,18 @@ export async function signup(req: Request<object, object, SignupRequestBody>, re
 
 		// Password strength validation
 		if (password.length < 6) {
-			res.status(400).json({ error: 'Password must be at least 6 characters long' });
+			res.status(400).json({
+				error: 'Password must be at least 6 characters long',
+			});
 			return;
 		}
 
 		// Email validation
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		if (!emailRegex.test(email)) {
-			res.status(400).json({ error: 'Please enter a valid email address' });
+			res.status(400).json({
+				error: 'Please enter a valid email address',
+			});
 			return;
 		}
 
@@ -154,7 +177,7 @@ export async function signup(req: Request<object, object, SignupRequestBody>, re
 			email,
 			name,
 			role: role ? role.toLowerCase() : 'clinician', // Default role
-			createdAt: new Date().toISOString()
+			createdAt: new Date().toISOString(),
 		};
 
 		// Insert user
@@ -167,7 +190,7 @@ export async function signup(req: Request<object, object, SignupRequestBody>, re
 				id: newUser.id,
 				username: newUser.username,
 				role: newUser.role,
-				name: newUser.name
+				name: newUser.name,
 			},
 			JWT_SECRET,
 			{ expiresIn: '24h' }
@@ -180,7 +203,7 @@ export async function signup(req: Request<object, object, SignupRequestBody>, re
 		res.status(201).json({
 			token,
 			user: userWithoutPassword,
-			message: 'User created successfully'
+			message: 'User created successfully',
 		});
 	} catch (error) {
 		console.error('Signup error:', error);
@@ -202,7 +225,10 @@ export function logout(req: Request, res: Response): void {
  * GET /api/auth/me
  * Get current user information
  */
-export async function getCurrentUser(req: AuthRequest, res: Response): Promise<void> {
+export async function getCurrentUser(
+	req: AuthRequest,
+	res: Response
+): Promise<void> {
 	try {
 		if (!req.user) {
 			res.status(401).json({ error: 'Not authenticated' });

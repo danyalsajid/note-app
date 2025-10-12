@@ -11,16 +11,18 @@ const __dirname = path.dirname(__filename);
 
 // Create the database file path relative to the project root
 // We need to handle both development (src/) and production (dist/) environments
-const DB_PATH = process.env.DATABASE_URL || (() => {
-  // Check if we're in dist/ or src/
-  const pathParts = __dirname.split(path.sep);
-  const inDist = pathParts.includes('dist');
+const DB_PATH =
+	process.env.DATABASE_URL ||
+	(() => {
+		// Check if we're in dist/ or src/
+		const pathParts = __dirname.split(path.sep);
+		const inDist = pathParts.includes('dist');
 
-  // From src/db/: go up 2 levels (../../)
-  // From dist/src/db/: go up 3 levels (../../../)
-  const upLevels = inDist ? '../../..' : '../..';
-  return path.join(__dirname, upLevels, 'data/database.db');
-})();
+		// From src/db/: go up 2 levels (../../)
+		// From dist/src/db/: go up 3 levels (../../../)
+		const upLevels = inDist ? '../../..' : '../..';
+		return path.join(__dirname, upLevels, 'data/database.db');
+	})();
 
 // Ensure the directory exists before creating the database
 const dbDir = path.dirname(DB_PATH);

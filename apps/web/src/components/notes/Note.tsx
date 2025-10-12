@@ -14,7 +14,9 @@ export default function Note(props: NoteProps) {
 		<div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
 			<div class="flex items-start justify-between mb-2">
 				<div class="flex-1">
-					<p class="text-gray-800 whitespace-pre-wrap">{props.note.content}</p>
+					<p class="text-gray-800 whitespace-pre-wrap">
+						{props.note.content}
+					</p>
 				</div>
 				<button class="ml-2 text-gray-400 hover:text-gray-600 transition">
 					<i class="fas fa-ellipsis-v" />
@@ -28,7 +30,7 @@ export default function Note(props: NoteProps) {
 				<Show when={tags().length > 0}>
 					<div class="flex gap-1">
 						<For each={tags()}>
-							{(tag) => (
+							{tag => (
 								<span class="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded">
 									{tag}
 								</span>

@@ -53,7 +53,6 @@ npm run start
 - `apps/web/` - Frontend web application
 - `apps/server/` - Backend server
 
-
 # Deployment Guide for Railway
 
 ## Production Setup
@@ -69,7 +68,6 @@ DATABASE_URL=./data/database.db
 NODE_ENV=production
 PORT=3001  # Railway will override this automatically
 ```
-
 
 ### Database
 

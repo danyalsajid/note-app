@@ -37,13 +37,16 @@ export const cancelEditing = () => {
  * Update draft note content
  */
 export const updateDraftNote = (updates: Partial<Note>) => {
-	setDraftNote((prev) => (prev ? { ...prev, ...updates } : updates));
+	setDraftNote(prev => (prev ? { ...prev, ...updates } : updates));
 };
 
 /**
  * Start creating a new note
  */
-export const startCreatingNote = (attachedToId: string, attachedToType: string) => {
+export const startCreatingNote = (
+	attachedToId: string,
+	attachedToType: string
+) => {
 	setDraftNote({
 		content: '',
 		attachedToId,
@@ -74,7 +77,9 @@ export const saveNote = async () => {
 		setEditingNoteId(null);
 		setDraftNote(null);
 	} catch (err) {
-		setNotesError(err instanceof Error ? err.message : 'Failed to save note');
+		setNotesError(
+			err instanceof Error ? err.message : 'Failed to save note'
+		);
 	} finally {
 		setNotesLoading(false);
 	}
@@ -92,7 +97,9 @@ export const deleteNote = async (_noteId: string) => {
 		// TODO: Implement API call to delete note
 		// await notesService.deleteNote(_noteId);
 	} catch (err) {
-		setNotesError(err instanceof Error ? err.message : 'Failed to delete note');
+		setNotesError(
+			err instanceof Error ? err.message : 'Failed to delete note'
+		);
 	} finally {
 		setNotesLoading(false);
 	}

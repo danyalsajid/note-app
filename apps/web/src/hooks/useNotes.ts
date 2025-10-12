@@ -20,14 +20,19 @@ export const useNotes = (item: HierarchyNode | null) => {
 		if (allNotes.length === 0) return null;
 
 		return allNotes.reduce((latest, current) => {
-			return new Date(current.createdAt) > new Date(latest.createdAt) ? current : latest;
+			return new Date(current.createdAt) > new Date(latest.createdAt)
+				? current
+				: latest;
 		});
 	});
 
 	// Sort notes by date (newest first)
 	const sortedNotes = createMemo(() => {
 		return [...notes()].sort((a, b) => {
-			return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+			return (
+				new Date(b.createdAt).getTime() -
+				new Date(a.createdAt).getTime()
+			);
 		});
 	});
 

@@ -20,3 +20,10 @@ export const getTypeColor = (type: string): string => {
 export const getTypeIcon = (type: string): string => {
 	return TYPE_ICONS[type] || 'fas fa-circle';
 };
+
+/**
+ * Capitalize the first letter of a string
+ */
+export const capitalizeFirst = (str: string): string => {
+	return str.charAt(0).toUpperCase() + str.slice(1);
+};

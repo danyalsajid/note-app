@@ -9,7 +9,12 @@ import {
 	fetchHierarchyItem,
 	clearSelectedItem,
 } from '../../stores';
-import { getTypeLabel, getTypeColor, getTypeIcon, formatDate } from '../../utils';
+import {
+	getTypeLabel,
+	getTypeColor,
+	getTypeIcon,
+	formatDate,
+} from '../../utils';
 
 export default function MainContent() {
 	const params = useParams();
@@ -52,9 +57,12 @@ export default function MainContent() {
 							<div class="mb-4">
 								<i class="fas fa-mouse-pointer text-6xl text-gray-300" />
 							</div>
-							<h1 class="text-3xl text-gray-800 font-bold mb-2">Note App</h1>
+							<h1 class="text-3xl text-gray-800 font-bold mb-2">
+								Note App
+							</h1>
 							<p class="text-gray-600 text-lg">
-								Select an item from the hierarchy to view its details and notes.
+								Select an item from the hierarchy to view its
+								details and notes.
 							</p>
 						</div>
 					</Show>

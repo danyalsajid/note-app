@@ -11,27 +11,27 @@ const __dirname = path.dirname(__filename);
 
 // CORS configuration
 const corsOptions = {
-  origin: function (origin: any, callback: any) {
-    // Allow requests with no origin (mobile apps, etc.)
-    if (!origin) return callback(null, true);
+	origin: function (origin: any, callback: any) {
+		// Allow requests with no origin (mobile apps, etc.)
+		if (!origin) return callback(null, true);
 
-    const allowedOrigins = [
-      'http://localhost:3000',
-      'http://127.0.0.1:3000',
-      'http://localhost:5173', // Vite dev server
-      'http://127.0.0.1:5173'
-    ];
+		const allowedOrigins = [
+			'http://localhost:3000',
+			'http://127.0.0.1:3000',
+			'http://localhost:5173', // Vite dev server
+			'http://127.0.0.1:5173',
+		];
 
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    } else {
-      return callback(new Error('Not allowed by CORS'), false);
-    }
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  exposedHeaders: ['X-Total-Count']
+		if (allowedOrigins.includes(origin)) {
+			return callback(null, true);
+		} else {
+			return callback(new Error('Not allowed by CORS'), false);
+		}
+	},
+	credentials: true,
+	methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+	allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+	exposedHeaders: ['X-Total-Count'],
 };
 
 // Apply CORS middleware
@@ -45,9 +45,9 @@ app.use(express.json());
 // In production: from dist/src/index.js -> ../../../web/dist
 const pathParts = __dirname.split(path.sep);
 const inDist = pathParts.includes('dist');
-const webDistPath = inDist 
-  ? path.join(__dirname, '../../../web/dist')
-  : path.join(__dirname, '../../web/dist');
+const webDistPath = inDist
+	? path.join(__dirname, '../../../web/dist')
+	: path.join(__dirname, '../../web/dist');
 
 app.use(express.static(webDistPath));
 

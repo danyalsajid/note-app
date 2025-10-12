@@ -7,7 +7,11 @@ import type { AuthRequest, JWTPayload } from '../../types/auth.types.js';
  * Middleware to require authentication
  * Verifies JWT token from Authorization header
  */
-export function requireAuth(req: AuthRequest, res: Response, next: NextFunction): void {
+export function requireAuth(
+	req: AuthRequest,
+	res: Response,
+	next: NextFunction
+): void {
 	try {
 		const authHeader = req.headers.authorization;
 
@@ -38,7 +42,11 @@ export function requireAuth(req: AuthRequest, res: Response, next: NextFunction)
  * Middleware to require admin role
  * Must be used after requireAuth
  */
-export function requireAdmin(req: AuthRequest, res: Response, next: NextFunction): void {
+export function requireAdmin(
+	req: AuthRequest,
+	res: Response,
+	next: NextFunction
+): void {
 	if (!req.user) {
 		res.status(401).json({ error: 'Authentication required' });
 		return;

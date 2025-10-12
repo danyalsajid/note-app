@@ -3,7 +3,7 @@ import {
 	login,
 	signup,
 	logout,
-	getCurrentUser
+	getCurrentUser,
 } from '../controllers/auth.controller.js';
 import { requireAuth } from '../middleware/auth.middleware.js';
 

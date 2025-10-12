@@ -6,7 +6,8 @@ import type {
 	DeleteResponse,
 } from '../types';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+const API_BASE_URL =
+	import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 export const hierarchyService = {
 	/**
@@ -23,7 +24,9 @@ export const hierarchyService = {
 	/**
 	 * Create a new hierarchy item
 	 */
-	async createHierarchyItem(data: CreateHierarchyItemBody): Promise<ApiResponse<HierarchyNode>> {
+	async createHierarchyItem(
+		data: CreateHierarchyItemBody
+	): Promise<ApiResponse<HierarchyNode>> {
 		const response = await fetch(`${API_BASE_URL}/hierarchy`, {
 			method: 'POST',
 			headers: {
@@ -41,7 +44,10 @@ export const hierarchyService = {
 	/**
 	 * Update a hierarchy item
 	 */
-	async updateHierarchyItem(id: string, data: { name?: string; type?: string }): Promise<ApiResponse<HierarchyNode>> {
+	async updateHierarchyItem(
+		id: string,
+		data: { name?: string; type?: string }
+	): Promise<ApiResponse<HierarchyNode>> {
 		const response = await fetch(`${API_BASE_URL}/hierarchy/${id}`, {
 			method: 'PUT',
 			headers: {

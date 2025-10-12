@@ -43,12 +43,14 @@ src/
 ## API Endpoints
 
 ### Authentication
+
 - `POST /api/auth/login` - User login
 - `POST /api/auth/signup` - User registration
 - `POST /api/auth/logout` - User logout
 - `GET /api/auth/me` - Get current user (requires auth)
 
 ### Notes
+
 - `GET /api/notes` - Get all notes
 - `POST /api/notes` - Create a new note
 - `GET /api/notes/:id` - Get a specific note
@@ -56,29 +58,35 @@ src/
 - `DELETE /api/notes/:id` - Delete a note
 
 ### Hierarchy
+
 - `GET /api/hierarchy/tree` - Get complete hierarchy tree
 - `POST /api/hierarchy` - Create a hierarchy item
 - `PUT /api/hierarchy/:id` - Update a hierarchy item
 - `DELETE /api/hierarchy/:id` - Delete a hierarchy item (cascading)
 
 ### Health Check
+
 - `GET /api/health` - Server health status
 
 ## Database Schema
 
 ### Users
+
 - Authentication and user management
 - Roles: admin, clinician
 
 ### Hierarchy Nodes
+
 - Organisation → Team → Client → Episode
 - Closure table for efficient hierarchy queries
 
 ### Notes
+
 - Attached to any hierarchy node
 - Support for tags and timestamps
 
 ### Attachments
+
 - File attachments for notes
 
 ## Development
@@ -116,6 +124,7 @@ npm run lint:fix
 ## Type Safety
 
 All controllers, routes, and database operations are fully typed with TypeScript:
+
 - Request/Response types for all endpoints
 - Proper typing for database queries
 - Centralized type definitions in `/types` directory

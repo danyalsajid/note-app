@@ -1,10 +1,10 @@
 import express from 'express';
-import { 
+import {
 	getHierarchyTree,
 	getHierarchyItem,
-	createHierarchyItem, 
-	updateHierarchyItem, 
-	deleteHierarchyItem 
+	createHierarchyItem,
+	updateHierarchyItem,
+	deleteHierarchyItem,
 } from '../controllers/hierarchy.controller.js';
 
 const router = express.Router();

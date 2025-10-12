@@ -1,12 +1,18 @@
-import { db, sqlite } from "./index.js";
-import { notes, users, hierarchyNodes, hierarchyClosure, attachments } from "./schema.js";
-import { seedDatabase } from "./seed.js";
+import { db, sqlite } from './index.js';
+import {
+	notes,
+	users,
+	hierarchyNodes,
+	hierarchyClosure,
+	attachments,
+} from './schema.js';
+import { seedDatabase } from './seed.js';
 
 // Initialize database function
-export const initializeDatabase = async (): Promise<void> => {  
+export const initializeDatabase = async (): Promise<void> => {
 	try {
-		console.log("Creating tables from schema");
-    
+		console.log('Creating tables from schema');
+
 		sqlite.exec(`
       CREATE TABLE IF NOT EXISTS users (
         id TEXT PRIMARY KEY,
@@ -67,12 +73,12 @@ export const initializeDatabase = async (): Promise<void> => {
       )
     `);
 
-		console.log("Tables created successfully!");
-    
+		console.log('Tables created successfully!');
+
 		await seedDatabase(db);
-		console.log("Database initialization completed.");
+		console.log('Database initialization completed.');
 	} catch (error) {
-		console.error("Database initialization failed:", error);
+		console.error('Database initialization failed:', error);
 		process.exit(1);
 	}
 };

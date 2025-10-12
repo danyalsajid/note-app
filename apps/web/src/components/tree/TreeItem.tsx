@@ -36,22 +36,35 @@ export default function TreeItem(props: TreeItemProps) {
 		<div class="space-y-1">
 			<div
 				class={`flex items-center justify-between py-3 pr-2 rounded group cursor-pointer transition-colors ${
-					isSelected() ? 'bg-blue-100 hover:bg-blue-200' : 'hover:bg-gray-50'
+					isSelected()
+						? 'bg-blue-100 hover:bg-blue-200'
+						: 'hover:bg-gray-50'
 				}`}
-				style={{ "padding-left": `${0.5 + paddingLeft()}rem` }}
+				style={{ 'padding-left': `${0.5 + paddingLeft()}rem` }}
 				onClick={() => props.onNavigate(`/item/${props.item.id}`)}
 			>
 				<div class="flex items-center gap-3">
-					<i class={config().icon} style={{ "font-size": config().fontSize, "color": config().color }} />
-					<span class={`font-normal ${isSelected() ? 'text-blue-900 font-medium' : 'text-gray-700'}`}>
+					<i
+						class={config().icon}
+						style={{
+							'font-size': config().fontSize,
+							color: config().color,
+						}}
+					/>
+					<span
+						class={`font-normal ${isSelected() ? 'text-blue-900 font-medium' : 'text-gray-700'}`}
+					>
 						{props.item.name}
 					</span>
 				</div>
 				<Show when={canAddChild()}>
 					<button
-						onClick={(e) => {
+						onClick={e => {
 							e.stopPropagation();
-							props.onAddChild(props.item.id, config().childType!);
+							props.onAddChild(
+								props.item.id,
+								config().childType!
+							);
 						}}
 						class="w-8 h-8 flex items-center justify-center border border-gray-300 rounded text-gray-600 hover:bg-gray-100 transition opacity-100"
 						title={`Add ${config().childType}`}
@@ -63,10 +76,15 @@ export default function TreeItem(props: TreeItemProps) {
 			<Show when={hasChildren()}>
 				<div>
 					<For each={children()}>
-						{(child) => (
+						{child => (
 							<TreeItem
 								item={child}
-								type={config().childType as 'team' | 'client' | 'episode'}
+								type={
+									config().childType as
+										| 'team'
+										| 'client'
+										| 'episode'
+								}
 								level={props.level + 1}
 								onAddChild={props.onAddChild}
 								selectedItemId={props.selectedItemId}

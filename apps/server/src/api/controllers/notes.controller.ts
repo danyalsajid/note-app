@@ -2,7 +2,10 @@ import { db } from '../../db/index.js';
 import { notes } from '../../db/schema.js';
 import { eq } from 'drizzle-orm';
 import type { Request, Response } from 'express';
-import type { CreateNoteBody, UpdateNoteBody } from '../../types/notes.types.js';
+import type {
+	CreateNoteBody,
+	UpdateNoteBody,
+} from '../../types/notes.types.js';
 
 // GET /api/notes - Get all notes
 export async function getAllNotes(req: Request, res: Response) {
@@ -16,22 +19,32 @@ export async function getAllNotes(req: Request, res: Response) {
 }
 
 // POST /api/notes - Create a new note
-export async function createNote(req: Request<object, object, CreateNoteBody>, res: Response) {
+export async function createNote(
+	req: Request<object, object, CreateNoteBody>,
+	res: Response
+) {
 	try {
 		const { content, attachedToId, attachedToType, tags } = req.body;
 
 		if (!content || !attachedToId || !attachedToType) {
-			return res.status(400).json({ error: 'Content, attachedToId, and attachedToType are required' });
+			return res
+				.status(400)
+				.json({
+					error: 'Content, attachedToId, and attachedToType are required',
+				});
 		}
 
 		const id = `note-${Date.now()}`;
-		const newNote = await db.insert(notes).values({
-			id,
-			content,
-			attachedToId,
-			attachedToType,
-			tags: tags ? JSON.stringify(tags) : undefined,
-		}).returning();
+		const newNote = await db
+			.insert(notes)
+			.values({
+				id,
+				content,
+				attachedToId,
+				attachedToType,
+				tags: tags ? JSON.stringify(tags) : undefined,
+			})
+			.returning();
 
 		res.status(201).json(newNote[0]);
 	} catch (error) {
@@ -58,7 +71,10 @@ export async function getNoteById(req: Request<{ id: string }>, res: Response) {
 }
 
 // PUT /api/notes/:id - Update a note
-export async function updateNote(req: Request<{ id: string }, object, UpdateNoteBody>, res: Response) {
+export async function updateNote(
+	req: Request<{ id: string }, object, UpdateNoteBody>,
+	res: Response
+) {
 	try {
 		const { id: noteId } = req.params;
 
@@ -68,11 +84,12 @@ export async function updateNote(req: Request<{ id: string }, object, UpdateNote
 			return res.status(400).json({ error: 'Content is required' });
 		}
 
-		const updatedNote = await db.update(notes)
+		const updatedNote = await db
+			.update(notes)
 			.set({
 				content,
 				tags: tags ? JSON.stringify(tags) : undefined,
-				updatedAt: new Date().toISOString()
+				updatedAt: new Date().toISOString(),
 			})
 			.where(eq(notes.id, noteId))
 			.returning();
@@ -92,7 +109,10 @@ export async function updateNote(req: Request<{ id: string }, object, UpdateNote
 export async function deleteNote(req: Request<{ id: string }>, res: Response) {
 	try {
 		const { id: noteId } = req.params;
-		const deletedNote = await db.delete(notes).where(eq(notes.id, noteId)).returning();
+		const deletedNote = await db
+			.delete(notes)
+			.where(eq(notes.id, noteId))
+			.returning();
 
 		if (deletedNote.length === 0) {
 			return res.status(404).json({ error: 'Note not found' });

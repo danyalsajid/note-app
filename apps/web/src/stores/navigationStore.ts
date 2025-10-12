@@ -16,7 +16,9 @@ const [loading, setLoading] = createSignal(false);
 const [error, setError] = createSignal<string | null>(null);
 
 // Selected item
-const [selectedItem, setSelectedItem] = createSignal<HierarchyNode | null>(null);
+const [selectedItem, setSelectedItem] = createSignal<HierarchyNode | null>(
+	null
+);
 
 // Selected item loading state
 const [selectedItemLoading, setSelectedItemLoading] = createSignal(false);
@@ -31,7 +33,9 @@ export const fetchHierarchyTree = async () => {
 		const data = await hierarchyService.getHierarchyTree();
 		setOrganisations(data.organisations);
 	} catch (err) {
-		setError(err instanceof Error ? err.message : 'Failed to load hierarchy');
+		setError(
+			err instanceof Error ? err.message : 'Failed to load hierarchy'
+		);
 	} finally {
 		setLoading(false);
 	}
@@ -71,7 +75,10 @@ export const createHierarchyItem = async (data: {
 /**
  * Update a hierarchy item
  */
-export const updateHierarchyItem = async (id: string, data: { name?: string; type?: string }) => {
+export const updateHierarchyItem = async (
+	id: string,
+	data: { name?: string; type?: string }
+) => {
 	await hierarchyService.updateHierarchyItem(id, data);
 	// Refresh hierarchy tree
 	await fetchHierarchyTree();

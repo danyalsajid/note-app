@@ -22,34 +22,37 @@ This authentication system provides secure user authentication using JWT (JSON W
 Register a new user.
 
 **Request Body:**
+
 ```json
 {
-  "username": "johndoe",
-  "password": "securepassword123",
-  "email": "john@example.com",
-  "name": "John Doe",
-  "role": "clinician",  // Optional: "admin" or "clinician" (default: "clinician")
-  "adminPasscode": "000000"  // Required only if role is "admin"
+	"username": "johndoe",
+	"password": "securepassword123",
+	"email": "john@example.com",
+	"name": "John Doe",
+	"role": "clinician", // Optional: "admin" or "clinician" (default: "clinician")
+	"adminPasscode": "000000" // Required only if role is "admin"
 }
 ```
 
 **Response (201):**
+
 ```json
 {
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "user": {
-    "id": "user-1234567890-abc123",
-    "username": "johndoe",
-    "email": "john@example.com",
-    "name": "John Doe",
-    "role": "clinician",
-    "createdAt": "2024-01-01T00:00:00.000Z"
-  },
-  "message": "User created successfully"
+	"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+	"user": {
+		"id": "user-1234567890-abc123",
+		"username": "johndoe",
+		"email": "john@example.com",
+		"name": "John Doe",
+		"role": "clinician",
+		"createdAt": "2024-01-01T00:00:00.000Z"
+	},
+	"message": "User created successfully"
 }
 ```
 
 **Validation Rules:**
+
 - Username, password, email, and name are required
 - Password must be at least 6 characters
 - Email must be valid format
@@ -63,25 +66,27 @@ Register a new user.
 Authenticate a user and receive a JWT token.
 
 **Request Body:**
+
 ```json
 {
-  "username": "johndoe",
-  "password": "securepassword123"
+	"username": "johndoe",
+	"password": "securepassword123"
 }
 ```
 
 **Response (200):**
+
 ```json
 {
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "user": {
-    "id": "user-1234567890-abc123",
-    "username": "johndoe",
-    "email": "john@example.com",
-    "name": "John Doe",
-    "role": "clinician",
-    "createdAt": "2024-01-01T00:00:00.000Z"
-  }
+	"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+	"user": {
+		"id": "user-1234567890-abc123",
+		"username": "johndoe",
+		"email": "john@example.com",
+		"name": "John Doe",
+		"role": "clinician",
+		"createdAt": "2024-01-01T00:00:00.000Z"
+	}
 }
 ```
 
@@ -90,19 +95,21 @@ Authenticate a user and receive a JWT token.
 Get current authenticated user information.
 
 **Headers:**
+
 ```
 Authorization: Bearer <token>
 ```
 
 **Response (200):**
+
 ```json
 {
-  "id": "user-1234567890-abc123",
-  "username": "johndoe",
-  "email": "john@example.com",
-  "name": "John Doe",
-  "role": "clinician",
-  "createdAt": "2024-01-01T00:00:00.000Z"
+	"id": "user-1234567890-abc123",
+	"username": "johndoe",
+	"email": "john@example.com",
+	"name": "John Doe",
+	"role": "clinician",
+	"createdAt": "2024-01-01T00:00:00.000Z"
 }
 ```
 
@@ -111,9 +118,10 @@ Authorization: Bearer <token>
 Logout user (client-side token removal).
 
 **Response (200):**
+
 ```json
 {
-  "message": "Logged out successfully"
+	"message": "Logged out successfully"
 }
 ```
 
@@ -139,13 +147,14 @@ DATABASE_URL=./data/database.db
 Protects routes by requiring a valid JWT token.
 
 **Usage:**
+
 ```typescript
 import { requireAuth } from './api/middleware/auth.middleware.js';
 
 router.get('/protected-route', requireAuth, (req, res) => {
-  // req.user contains the decoded JWT payload
-  console.log(req.user.id, req.user.username, req.user.role);
-  res.json({ message: 'Protected data' });
+	// req.user contains the decoded JWT payload
+	console.log(req.user.id, req.user.username, req.user.role);
+	res.json({ message: 'Protected data' });
 });
 ```
 
@@ -154,31 +163,35 @@ router.get('/protected-route', requireAuth, (req, res) => {
 Requires both authentication and admin role. Must be used after `requireAuth`.
 
 **Usage:**
+
 ```typescript
 import { requireAuth, requireAdmin } from './api/middleware/auth.middleware.js';
 
 router.delete('/admin-only', requireAuth, requireAdmin, (req, res) => {
-  res.json({ message: 'Admin-only action' });
+	res.json({ message: 'Admin-only action' });
 });
 ```
 
 ## TypeScript Types
 
 ### `JWTPayload`
+
 ```typescript
 interface JWTPayload {
-  id: string;
-  username: string;
-  role: string;
-  name: string;
+	id: string;
+	username: string;
+	role: string;
+	name: string;
 }
 ```
 
 ### `AuthRequest`
+
 Extended Express Request with user information:
+
 ```typescript
 interface AuthRequest extends Request {
-  user?: JWTPayload;
+	user?: JWTPayload;
 }
 ```
 
@@ -196,9 +209,9 @@ interface AuthRequest extends Request {
 ```typescript
 // Login
 const loginResponse = await fetch('/api/auth/login', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ username: 'johndoe', password: 'password123' })
+	method: 'POST',
+	headers: { 'Content-Type': 'application/json' },
+	body: JSON.stringify({ username: 'johndoe', password: 'password123' }),
 });
 const { token, user } = await loginResponse.json();
 
@@ -207,9 +220,9 @@ localStorage.setItem('token', token);
 
 // Make authenticated requests
 const response = await fetch('/api/auth/me', {
-  headers: {
-    'Authorization': `Bearer ${token}`
-  }
+	headers: {
+		Authorization: `Bearer ${token}`,
+	},
 });
 const currentUser = await response.json();
 
