@@ -1,7 +1,9 @@
-import { Show, For, createSignal, createEffect } from 'solid-js';
+import { Show, createSignal, createEffect } from 'solid-js';
 import type { Organisation, Team, Client, Episode } from '../types/hierarchy';
 import { useParams } from "@solidjs/router";
 import { hierarchyService } from '../services/hierarchyService';
+import NotesSection from './NotesSection';
+import ItemHeader from './ItemHeader';
 
 export default function MainContent() {
 	const params = useParams();
@@ -64,6 +66,11 @@ export default function MainContent() {
 		return icons[type] || 'fas fa-circle';
 	};
 
+	const handleAddNote = () => {
+		// TODO: Implement add note functionality
+		// For now, just a placeholder
+	};
+
 	const formatDate = (dateString: string) => {
 		const date = new Date(dateString);
 		return date.toLocaleDateString('en-US', {
@@ -106,110 +113,20 @@ export default function MainContent() {
 				}
 			>
 				<div class="max-w-4xl mx-auto">
-					{/* Header Section */}
-					<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-						<div class="flex items-start justify-between mb-4">
-							<div class="flex items-center gap-4">
-								<div class="w-12 h-12 flex items-center justify-center bg-gray-100 rounded-lg">
-									<i
-										class={getTypeIcon(selectedItem()!.type)}
-										style={{ "font-size": "1.5rem", "color": "#4b5563" }}
-									/>
-								</div>
-								<div>
-									<h1 class="text-3xl font-bold text-gray-900">{selectedItem()!.name}</h1>
-									<span
-										class={`inline-block px-3 py-1 rounded-full text-sm font-medium mt-2 ${getTypeColor(selectedItem()!.type)}`}
-									>
-										{getTypeLabel(selectedItem()!.type)}
-									</span>
-								</div>
-							</div>
-						</div>
-
-						{/* Metadata */}
-						<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 pt-6 border-t border-gray-200">
-							<div>
-								<p class="text-sm text-gray-500 mb-1">ID</p>
-								<p class="text-gray-900 font-mono text-sm">{selectedItem()!.id}</p>
-							</div>
-							<div>
-								<p class="text-sm text-gray-500 mb-1">Type</p>
-								<p class="text-gray-900">{getTypeLabel(selectedItem()!.type)}</p>
-							</div>
-							<div>
-								<p class="text-sm text-gray-500 mb-1">Created At</p>
-								<p class="text-gray-900">{formatDate(selectedItem()!.createdAt)}</p>
-							</div>
-							<div>
-								<p class="text-sm text-gray-500 mb-1">Updated At</p>
-								<p class="text-gray-900">{formatDate(selectedItem()!.updatedAt)}</p>
-							</div>
-						</div>
-					</div>
+					<ItemHeader
+						selectedItem={selectedItem()!}
+						getTypeIcon={getTypeIcon}
+						getTypeColor={getTypeColor}
+						getTypeLabel={getTypeLabel}
+						formatDate={formatDate}
+					/>
 
 					{/* Notes Section */}
-					<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-						<div class="flex items-center justify-between mb-4">
-							<h2 class="text-xl font-semibold text-gray-900 flex items-center gap-2">
-								<i class="fas fa-sticky-note text-gray-600" />
-								Notes
-								<Show when={selectedItem()!.notes && selectedItem()!.notes!.length > 0}>
-									<span class="text-sm font-normal text-gray-500">
-										({selectedItem()!.notes!.length})
-									</span>
-								</Show>
-							</h2>
-							<button class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded hover:bg-blue-700 transition">
-								<i class="fas fa-plus mr-2" />
-								Add Note
-							</button>
-						</div>
-
-						<Show
-							when={selectedItem()!.notes && selectedItem()!.notes!.length > 0}
-							fallback={
-								<div class="text-center py-12">
-									<i class="fas fa-file-alt text-4xl text-gray-300 mb-3" />
-									<p class="text-gray-500">No notes yet. Add your first note to get started.</p>
-								</div>
-							}
-						>
-							<div class="space-y-4">
-								<For each={selectedItem()!.notes}>
-									{(note) => (
-										<div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
-											<div class="flex items-start justify-between mb-2">
-												<div class="flex-1">
-													<p class="text-gray-800 whitespace-pre-wrap">{note.content}</p>
-												</div>
-												<button class="ml-2 text-gray-400 hover:text-gray-600 transition">
-													<i class="fas fa-ellipsis-v" />
-												</button>
-											</div>
-											<div class="flex items-center gap-4 mt-3 pt-3 border-t border-gray-200">
-												<span class="text-xs text-gray-500">
-													<i class="fas fa-clock mr-1" />
-													{formatDate(note.createdAt)}
-												</span>
-												<Show when={note.tags}>
-													<div class="flex gap-1">
-														<For each={JSON.parse(note.tags || '[]')}>
-															{(tag) => (
-																<span class="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded">
-																	{tag}
-																</span>
-															)}
-														</For>
-													</div>
-												</Show>
-											</div>
-										</div>
-									)}
-								</For>
-							</div>
-						</Show>
-					</div>
+					<NotesSection
+						selectedItem={selectedItem()!}
+						formatDate={formatDate}
+						onAddNote={handleAddNote}
+					/>
 				</div>
 			</Show>
 		</main>
