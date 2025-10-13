@@ -8,15 +8,15 @@ export interface CreateNoteBody {
 	attachedToId: string;
 	attachedToType: string;
 	tags?: string[];
-	voiceNoteFilename?: string;
-	voiceNoteDuration?: number;
+	voiceNoteFilename?: string | null;
+	voiceNoteDuration?: number | null;
 }
 
 export interface UpdateNoteBody {
 	content: string;
 	tags?: string[];
-	voiceNoteFilename?: string;
-	voiceNoteDuration?: number;
+	voiceNoteFilename?: string | null;
+	voiceNoteDuration?: number | null;
 }
 
 export const notesService = {

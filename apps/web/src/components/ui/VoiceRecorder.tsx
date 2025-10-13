@@ -4,6 +4,7 @@ import styles from './VoiceRecorder.module.css';
 interface VoiceRecorderProps {
 	onRecordingComplete: (audioBlob: Blob, duration: number) => void;
 	onCancel: () => void;
+	onRecordingStateChange?: (isRecording: boolean) => void;
 }
 
 export default function VoiceRecorder(props: VoiceRecorderProps) {
@@ -51,6 +52,7 @@ export default function VoiceRecorder(props: VoiceRecorderProps) {
 
 			mediaRecorder.start();
 			setIsRecording(true);
+			props.onRecordingStateChange?.(true);
 			startTime = Date.now();
 			
 			// Start timer
@@ -94,6 +96,7 @@ export default function VoiceRecorder(props: VoiceRecorderProps) {
 			mediaRecorder.stop();
 			setIsRecording(false);
 			setIsPaused(false);
+			props.onRecordingStateChange?.(false);
 			
 			if (timerInterval) {
 				clearInterval(timerInterval);
@@ -166,6 +169,7 @@ export default function VoiceRecorder(props: VoiceRecorderProps) {
 											when={!isPaused()}
 											fallback={
 												<button
+													type="button"
 													class={styles.resumeButton}
 													onClick={resumeRecording}
 													title="Resume"
@@ -175,6 +179,7 @@ export default function VoiceRecorder(props: VoiceRecorderProps) {
 											}
 										>
 											<button
+												type="button"
 												class={styles.pauseButton}
 												onClick={pauseRecording}
 												title="Pause"
@@ -183,6 +188,7 @@ export default function VoiceRecorder(props: VoiceRecorderProps) {
 											</button>
 										</Show>
 										<button
+											type="button"
 											class={styles.stopButton}
 											onClick={stopRecording}
 											title="Stop"
@@ -193,6 +199,7 @@ export default function VoiceRecorder(props: VoiceRecorderProps) {
 								}
 							>
 								<button
+									type="button"
 									class={styles.startButton}
 									onClick={startRecording}
 									title="Start Recording"
@@ -214,6 +221,7 @@ export default function VoiceRecorder(props: VoiceRecorderProps) {
 							Duration: {formatTime(recordingTime())}
 						</div>
 						<button
+							type="button"
 							class={styles.rerecordButton}
 							onClick={handleReset}
 						>

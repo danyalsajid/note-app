@@ -8,7 +8,7 @@ import styles from './NoteModal.module.css';
 interface NoteModalProps {
 	isOpen: boolean;
 	onClose: () => void;
-	onSave: (content: string, tags: string[], voiceNoteFilename?: string, voiceNoteDuration?: number) => void;
+	onSave: (content: string, tags: string[], voiceNoteFilename?: string | null, voiceNoteDuration?: number | null) => void;
 	note?: Note | null;
 	isLoading?: boolean;
 }
@@ -21,6 +21,7 @@ export default function NoteModal(props: NoteModalProps) {
 	const [voiceNoteDuration, setVoiceNoteDuration] = createSignal<number>(0);
 	const [voiceNoteFilename, setVoiceNoteFilename] = createSignal<string | null>(null);
 	const [isUploadingVoice, setIsUploadingVoice] = createSignal(false);
+	const [isRecording, setIsRecording] = createSignal(false);
 
 	// Reset form when modal opens or note changes
 	createEffect(() => {
@@ -34,6 +35,7 @@ export default function NoteModal(props: NoteModalProps) {
 			setVoiceNoteDuration(note?.voiceNoteDuration || 0);
 			setVoiceNoteBlob(null);
 			setShowVoiceRecorder(false);
+			setIsRecording(false);
 		}
 	});
 
@@ -43,7 +45,16 @@ export default function NoteModal(props: NoteModalProps) {
 		setShowVoiceRecorder(false);
 	};
 
-	const handleRemoveVoiceNote = () => {
+	const handleRemoveVoiceNote = async () => {
+		// If there's an existing voice note file, delete it from server
+		if (voiceNoteFilename() && !voiceNoteBlob()) {
+			try {
+				await notesService.deleteVoiceNote(voiceNoteFilename()!);
+			} catch (error) {
+				console.error('Failed to delete voice note:', error);
+			}
+		}
+		
 		setVoiceNoteBlob(null);
 		setVoiceNoteFilename(null);
 		setVoiceNoteDuration(0);
@@ -88,7 +99,13 @@ export default function NoteModal(props: NoteModalProps) {
 			}
 		}
 
-		props.onSave(trimmedContent, tags, uploadedFilename || undefined, duration || undefined);
+		// Pass null if no voice note, otherwise pass the filename
+		props.onSave(
+			trimmedContent, 
+			tags, 
+			uploadedFilename || (voiceNoteFilename() ? undefined : null), 
+			uploadedFilename || voiceNoteFilename() ? duration || undefined : null
+		);
 	};
 
 	return (
@@ -178,6 +195,7 @@ export default function NoteModal(props: NoteModalProps) {
 						<VoiceRecorder
 							onRecordingComplete={handleRecordingComplete}
 							onCancel={() => setShowVoiceRecorder(false)}
+							onRecordingStateChange={setIsRecording}
 						/>
 					</Show>
 				</div>
@@ -187,14 +205,14 @@ export default function NoteModal(props: NoteModalProps) {
 						type="button"
 						onClick={() => props.onClose()}
 						class={styles.cancelButton}
-						disabled={props.isLoading || isUploadingVoice()}
+						disabled={props.isLoading || isUploadingVoice() || isRecording()}
 					>
 						Cancel
 					</button>
 					<button
 						type="submit"
 						class={styles.saveButton}
-						disabled={props.isLoading || isUploadingVoice() || !content().trim()}
+						disabled={props.isLoading || isUploadingVoice() || isRecording() || !content().trim()}
 					>
 						<Show when={props.isLoading || isUploadingVoice()} fallback="Save">
 							<i class="fas fa-spinner fa-spin mr-2" />

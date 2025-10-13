@@ -6,6 +6,12 @@ import type {
 	CreateNoteBody,
 	UpdateNoteBody,
 } from '../../types/notes.types.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs/promises';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // GET /api/notes - Get all notes
 export async function getAllNotes(req: Request, res: Response) {
@@ -86,6 +92,30 @@ export async function updateNote(
 			return res.status(400).json({ error: 'Content is required' });
 		}
 
+		// Get the existing note to check if we need to delete old voice note
+		const existingNote = await db.select().from(notes).where(eq(notes.id, noteId));
+		
+		if (existingNote.length === 0) {
+			return res.status(404).json({ error: 'Note not found' });
+		}
+
+		// If voice note is being removed (set to null) and there was an old one, delete the file
+		if (voiceNoteFilename === null && existingNote[0].voiceNoteFilename) {
+			try {
+				const pathParts = __dirname.split(path.sep);
+				const inDist = pathParts.includes('dist');
+				const uploadsPath = inDist
+					? path.join(__dirname, '../../../../data/voice-notes')
+					: path.join(__dirname, '../../../data/voice-notes');
+				
+				const filePath = path.join(uploadsPath, existingNote[0].voiceNoteFilename);
+				await fs.unlink(filePath);
+			} catch (fileError) {
+				console.error('Error deleting old voice note file:', fileError);
+				// Continue with update even if file deletion fails
+			}
+		}
+
 		const updatedNote = await db
 			.update(notes)
 			.set({
@@ -98,10 +128,6 @@ export async function updateNote(
 			.where(eq(notes.id, noteId))
 			.returning();
 
-		if (updatedNote.length === 0) {
-			return res.status(404).json({ error: 'Note not found' });
-		}
-
 		res.json(updatedNote[0]);
 	} catch (error) {
 		console.error('Error updating note:', error);
@@ -113,14 +139,35 @@ export async function updateNote(
 export async function deleteNote(req: Request<{ id: string }>, res: Response) {
 	try {
 		const { id: noteId } = req.params;
-		const deletedNote = await db
-			.delete(notes)
-			.where(eq(notes.id, noteId))
-			.returning();
-
-		if (deletedNote.length === 0) {
+		
+		// First, get the note to check if it has a voice note
+		const noteToDelete = await db.select().from(notes).where(eq(notes.id, noteId));
+		
+		if (noteToDelete.length === 0) {
 			return res.status(404).json({ error: 'Note not found' });
 		}
+
+		const note = noteToDelete[0];
+		
+		// Delete the voice note file if it exists
+		if (note.voiceNoteFilename) {
+			try {
+				const pathParts = __dirname.split(path.sep);
+				const inDist = pathParts.includes('dist');
+				const uploadsPath = inDist
+					? path.join(__dirname, '../../../../data/voice-notes')
+					: path.join(__dirname, '../../../data/voice-notes');
+				
+				const filePath = path.join(uploadsPath, note.voiceNoteFilename);
+				await fs.unlink(filePath);
+			} catch (fileError) {
+				console.error('Error deleting voice note file:', fileError);
+				// Continue with note deletion even if file deletion fails
+			}
+		}
+
+		// Delete the note from database
+		await db.delete(notes).where(eq(notes.id, noteId));
 
 		res.json({ message: 'Note deleted successfully' });
 	} catch (error) {

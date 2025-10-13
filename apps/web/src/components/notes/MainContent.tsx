@@ -62,7 +62,7 @@ export default function MainContent() {
 		}
 	};
 
-	const handleSaveNote = async (content: string, tags: string[], voiceNoteFilename?: string, voiceNoteDuration?: number) => {
+	const handleSaveNote = async (content: string, tags: string[], voiceNoteFilename?: string | null, voiceNoteDuration?: number | null) => {
 		setIsSaving(true);
 		try {
 			const selectedItem = navigation.selectedItem();
