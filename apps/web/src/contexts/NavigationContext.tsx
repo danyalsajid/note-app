@@ -35,6 +35,9 @@ type NavigationContextType = {
 	clearSelectedItem: () => void;
 	searchNotes: (query: string) => Promise<void>;
 	clearSearch: () => void;
+	addNoteToSelectedItem: (note: Note) => void;
+	updateNoteInSelectedItem: (note: Note) => void;
+	removeNoteFromSelectedItem: (noteId: string) => void;
 };
 
 /**
@@ -175,6 +178,61 @@ export const NavigationProvider: ParentComponent = (props) => {
 		setIsSearching(false);
 	};
 
+	/**
+	 * Add a note to the selected item's notes array (optimistic update)
+	 */
+	const addNoteToSelectedItem = (note: Note) => {
+		const current = selectedItem();
+		if (current) {
+			const existingNotes = (current.notes || []) as Note[];
+			const newNotes = [note, ...existingNotes];
+			
+			// Create a completely new object to trigger Solid's reactivity
+			const updatedItem = {
+				...current,
+				notes: newNotes,
+			};
+			
+			console.log('[NavigationContext] Adding note to selected item:', note.id);
+			console.log('[NavigationContext] Current notes count:', existingNotes.length);
+			console.log('[NavigationContext] New notes count:', newNotes.length);
+			
+			setSelectedItem(updatedItem);
+			
+			console.log('[NavigationContext] Selected item updated');
+		}
+	};
+
+	/**
+	 * Update a note in the selected item's notes array (optimistic update)
+	 */
+	const updateNoteInSelectedItem = (note: Note) => {
+		const current = selectedItem();
+		if (current && current.notes) {
+			const notes = current.notes as Note[];
+			setSelectedItem({
+				...current,
+				notes: notes.map(n => n.id === note.id ? note : n),
+			});
+			console.log('[NavigationContext] Updated note in selected item:', note.id);
+		}
+	};
+
+	/**
+	 * Remove a note from the selected item's notes array (optimistic update)
+	 */
+	const removeNoteFromSelectedItem = (noteId: string) => {
+		const current = selectedItem();
+		if (current && current.notes) {
+			const notes = current.notes as Note[];
+			setSelectedItem({
+				...current,
+				notes: notes.filter(n => n.id !== noteId),
+			});
+			console.log('[NavigationContext] Removed note from selected item:', noteId);
+		}
+	};
+
 	// Context value
 	const contextValue: NavigationContextType = {
 		// State
@@ -196,6 +254,9 @@ export const NavigationProvider: ParentComponent = (props) => {
 		clearSelectedItem,
 		searchNotes,
 		clearSearch,
+		addNoteToSelectedItem,
+		updateNoteInSelectedItem,
+		removeNoteFromSelectedItem,
 	};
 
 	return (

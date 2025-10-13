@@ -2,6 +2,7 @@ import { type Component } from 'solid-js';
 import { Router, Route } from '@solidjs/router';
 import { NavigationProvider } from './contexts';
 import HomePage from './pages/HomePage';
+import OfflineIndicator from './components/OfflineIndicator';
 
 const App: Component = () => {
 	return (
@@ -10,6 +11,7 @@ const App: Component = () => {
 				<Route path="/" component={HomePage} />
 				<Route path="/item/:id" component={HomePage} />
 			</Router>
+			<OfflineIndicator />
 		</NavigationProvider>
 	);
 };

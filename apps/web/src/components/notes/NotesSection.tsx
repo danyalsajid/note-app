@@ -4,7 +4,7 @@ import Note from './Note';
 import styles from './NotesSection.module.css';
 
 interface NotesSectionProps {
-	selectedItem: HierarchyNode;
+	selectedItem: HierarchyNode | (() => HierarchyNode);
 	formatDate: (dateString: string) => string;
 	onAddNote: () => void;
 	onEditNote: (note: NoteType) => void;
@@ -12,6 +12,10 @@ interface NotesSectionProps {
 }
 
 export default function NotesSection(props: NotesSectionProps) {
+	// Helper to get the selected item (supports both direct value and getter)
+	const getSelectedItem = () => 
+		typeof props.selectedItem === 'function' ? props.selectedItem() : props.selectedItem;
+
 	return (
 		<div class={styles.container}>
 			<div class={styles.header}>
@@ -20,12 +24,12 @@ export default function NotesSection(props: NotesSectionProps) {
 					Notes
 					<Show
 						when={
-							props.selectedItem.notes &&
-							props.selectedItem.notes!.length > 0
+							getSelectedItem().notes &&
+							getSelectedItem().notes!.length > 0
 						}
 					>
 						<span class={styles.count}>
-							({props.selectedItem.notes!.length})
+							({getSelectedItem().notes!.length})
 						</span>
 					</Show>
 				</h2>
@@ -40,8 +44,8 @@ export default function NotesSection(props: NotesSectionProps) {
 
 			<Show
 				when={
-					props.selectedItem.notes &&
-					props.selectedItem.notes!.length > 0
+					getSelectedItem().notes &&
+					getSelectedItem().notes!.length > 0
 				}
 				fallback={
 					<div class={styles.empty}>
@@ -53,7 +57,7 @@ export default function NotesSection(props: NotesSectionProps) {
 				}
 			>
 				<div class={styles.notesList}>
-					<For each={props.selectedItem.notes}>
+					<For each={getSelectedItem().notes}>
 						{note => (
 							<Note 
 								note={note} 

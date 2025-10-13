@@ -50,11 +50,20 @@ export default function MainContent() {
 
 	const handleDeleteNote = async (note: Note) => {
 		try {
+			// Remove from UI immediately (optimistic update)
+			navigation.removeNoteFromSelectedItem(note.id);
+			
 			await notesService.deleteNote(note.id);
-			// Refresh the current item to update the notes list
+			
+			// Try to refresh from server (will work when online, fail silently when offline)
 			const currentId = params.id;
 			if (currentId) {
-				await navigation.fetchHierarchyItem(currentId);
+				try {
+					await navigation.fetchHierarchyItem(currentId);
+				} catch {
+					// Ignore fetch errors when offline - we already updated the UI optimistically
+					console.log('[MainContent] Could not refresh from server (offline?)');
+				}
 			}
 		} catch (error) {
 			console.error('Failed to delete note:', error);
@@ -72,15 +81,19 @@ export default function MainContent() {
 			
 			if (currentNote) {
 				// Update existing note
-				await notesService.updateNote(currentNote.id, {
+				const updatedNote = await notesService.updateNote(currentNote.id, {
 					content,
 					tags,
 					voiceNoteFilename,
 					voiceNoteDuration,
 				});
+				
+				// Update the note in the selected item's notes array
+				navigation.updateNoteInSelectedItem(updatedNote);
 			} else {
 				// Create new note
-				await notesService.createNote({
+				console.log('[MainContent] Creating new note for item:', selectedItem.id);
+				const newNote = await notesService.createNote({
 					content,
 					attachedToId: selectedItem.id,
 					attachedToType: selectedItem.type,
@@ -88,12 +101,23 @@ export default function MainContent() {
 					voiceNoteFilename,
 					voiceNoteDuration,
 				});
+				console.log('[MainContent] Note created:', newNote);
+				
+				// Add the new note to the selected item's notes array
+				console.log('[MainContent] Adding note to UI');
+				navigation.addNoteToSelectedItem(newNote);
+				console.log('[MainContent] Note added to UI');
 			}
 
-			// Refresh the current item to update the notes list
+			// Try to refresh from server (will work when online, fail silently when offline)
 			const currentId = params.id;
 			if (currentId) {
-				await navigation.fetchHierarchyItem(currentId);
+				try {
+					await navigation.fetchHierarchyItem(currentId);
+				} catch (error) {
+					// Ignore fetch errors when offline - we already updated the UI optimistically
+					console.log('[MainContent] Could not refresh from server (offline?)');
+				}
 			}
 
 			setIsModalOpen(false);
@@ -276,7 +300,7 @@ export default function MainContent() {
 
 					{/* Notes Section */}
 					<NotesSection
-						selectedItem={navigation.selectedItem()!}
+						selectedItem={() => navigation.selectedItem()!}
 						formatDate={formatDate}
 						onAddNote={handleAddNote}
 						onEditNote={handleEditNote}
