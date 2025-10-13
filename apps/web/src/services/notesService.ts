@@ -8,11 +8,15 @@ export interface CreateNoteBody {
 	attachedToId: string;
 	attachedToType: string;
 	tags?: string[];
+	voiceNoteFilename?: string;
+	voiceNoteDuration?: number;
 }
 
 export interface UpdateNoteBody {
 	content: string;
 	tags?: string[];
+	voiceNoteFilename?: string;
+	voiceNoteDuration?: number;
 }
 
 export const notesService = {
@@ -81,5 +85,46 @@ export const notesService = {
 			throw new Error(error.message || 'Failed to search notes');
 		}
 		return response.json();
+	},
+
+	/**
+	 * Upload a voice note file
+	 */
+	async uploadVoiceNote(audioBlob: Blob): Promise<{ filename: string; path: string }> {
+		const formData = new FormData();
+		formData.append('voiceNote', audioBlob, 'voice-note.webm');
+
+		const response = await fetch(`${API_BASE_URL}/voice-notes/upload`, {
+			method: 'POST',
+			body: formData,
+		});
+
+		if (!response.ok) {
+			const error = await response.json();
+			throw new Error(error.message || 'Failed to upload voice note');
+		}
+
+		return response.json();
+	},
+
+	/**
+	 * Delete a voice note file
+	 */
+	async deleteVoiceNote(filename: string): Promise<void> {
+		const response = await fetch(`${API_BASE_URL}/voice-notes/${filename}`, {
+			method: 'DELETE',
+		});
+
+		if (!response.ok) {
+			const error = await response.json();
+			throw new Error(error.message || 'Failed to delete voice note');
+		}
+	},
+
+	/**
+	 * Get voice note URL
+	 */
+	getVoiceNoteUrl(filename: string): string {
+		return `${API_BASE_URL}/voice-notes/${filename}`;
 	},
 };

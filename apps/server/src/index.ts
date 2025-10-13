@@ -55,6 +55,7 @@ app.use(express.static(webDistPath));
 import authRoutes from './api/routes/auth.routes.js';
 import notesRoutes from './api/routes/notes.routes.js';
 import hierarchyRoutes from './api/routes/hierarchy.routes.js';
+import voiceNotesRoutes from './api/routes/voiceNotes.routes.js';
 
 app.get('/api/health', (req: Request, res: Response) => {
 	console.log('Health check');
@@ -69,6 +70,9 @@ app.use('/api', notesRoutes);
 
 // Use hierarchy routes for all hierarchy routes
 app.use('/api', hierarchyRoutes);
+
+// Use voice notes routes for voice note uploads
+app.use('/api', voiceNotesRoutes);
 
 // Catch-all handler for client-side routing
 app.use((req: Request, res: Response) => {

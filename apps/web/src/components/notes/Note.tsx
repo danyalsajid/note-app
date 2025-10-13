@@ -1,6 +1,7 @@
 import { Show, For, createSignal, onMount, onCleanup } from 'solid-js';
 import type { Note as NoteType } from '../../types';
 import { parseTags } from '../../utils';
+import { notesService } from '../../services/notesService';
 import styles from './Note.module.css';
 
 interface NoteProps {
@@ -46,6 +47,12 @@ export default function Note(props: NoteProps) {
 
 	const tags = () => parseTags(props.note.tags);
 
+	const formatTime = (seconds: number): string => {
+		const mins = Math.floor(seconds / 60);
+		const secs = seconds % 60;
+		return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+	};
+
 	return (
 		<div class={styles.container}>
 			<div class={styles.header}>
@@ -53,6 +60,23 @@ export default function Note(props: NoteProps) {
 					<p class={styles.text}>
 						{props.note.content}
 					</p>
+					
+					{/* Voice Note Player */}
+					<Show when={props.note.voiceNoteFilename}>
+						<div class={styles.voiceNote}>
+							<div class={styles.voiceNoteHeader}>
+								<i class="fas fa-microphone text-blue-600 mr-2" />
+								<span class={styles.voiceNoteLabel}>
+									Voice Note ({formatTime(props.note.voiceNoteDuration || 0)})
+								</span>
+							</div>
+							<audio 
+								controls 
+								src={notesService.getVoiceNoteUrl(props.note.voiceNoteFilename!)} 
+								class={styles.audioPlayer}
+							/>
+						</div>
+					</Show>
 				</div>
 				<div class={styles.menuContainer} ref={menuContainerRef}>
 					<button 

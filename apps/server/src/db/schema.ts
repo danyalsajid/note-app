@@ -41,6 +41,8 @@ export const notes = sqliteTable('notes', {
 		.references(() => hierarchyNodes.id, { onDelete: 'cascade' }),
 	attachedToType: text('attached_to_type').notNull(),
 	tags: text('tags'), // JSON string array of custom tags
+	voiceNoteFilename: text('voice_note_filename'), // Filename of the voice note
+	voiceNoteDuration: integer('voice_note_duration'), // Duration in seconds
 	createdAt: text('created_at')
 		.notNull()
 		.default(sql`CURRENT_TIMESTAMP`),

@@ -62,7 +62,7 @@ export default function MainContent() {
 		}
 	};
 
-	const handleSaveNote = async (content: string, tags: string[]) => {
+	const handleSaveNote = async (content: string, tags: string[], voiceNoteFilename?: string, voiceNoteDuration?: number) => {
 		setIsSaving(true);
 		try {
 			const selectedItem = navigation.selectedItem();
@@ -75,6 +75,8 @@ export default function MainContent() {
 				await notesService.updateNote(currentNote.id, {
 					content,
 					tags,
+					voiceNoteFilename,
+					voiceNoteDuration,
 				});
 			} else {
 				// Create new note
@@ -83,6 +85,8 @@ export default function MainContent() {
 					attachedToId: selectedItem.id,
 					attachedToType: selectedItem.type,
 					tags,
+					voiceNoteFilename,
+					voiceNoteDuration,
 				});
 			}
 

@@ -24,7 +24,7 @@ export async function createNote(
 	res: Response
 ) {
 	try {
-		const { content, attachedToId, attachedToType, tags } = req.body;
+		const { content, attachedToId, attachedToType, tags, voiceNoteFilename, voiceNoteDuration } = req.body;
 
 		if (!content || !attachedToId || !attachedToType) {
 			return res
@@ -43,6 +43,8 @@ export async function createNote(
 				attachedToId,
 				attachedToType,
 				tags: tags ? JSON.stringify(tags) : undefined,
+				voiceNoteFilename: voiceNoteFilename || null,
+				voiceNoteDuration: voiceNoteDuration || null,
 			})
 			.returning();
 
@@ -78,7 +80,7 @@ export async function updateNote(
 	try {
 		const { id: noteId } = req.params;
 
-		const { content, tags } = req.body;
+		const { content, tags, voiceNoteFilename, voiceNoteDuration } = req.body;
 
 		if (!content) {
 			return res.status(400).json({ error: 'Content is required' });
@@ -89,6 +91,8 @@ export async function updateNote(
 			.set({
 				content,
 				tags: tags ? JSON.stringify(tags) : undefined,
+				voiceNoteFilename: voiceNoteFilename !== undefined ? voiceNoteFilename : undefined,
+				voiceNoteDuration: voiceNoteDuration !== undefined ? voiceNoteDuration : undefined,
 				updatedAt: new Date().toISOString(),
 			})
 			.where(eq(notes.id, noteId))
