@@ -9,6 +9,7 @@ import type {
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs/promises';
+import { aiService } from '../../services/ai.service.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -200,5 +201,22 @@ export async function searchNotes(req: Request, res: Response) {
 	} catch (error) {
 		console.error('Error searching notes:', error);
 		res.status(500).json({ error: 'Failed to search notes' });
+	}
+}
+
+// POST /api/notes/summarize - Summarize note content
+export async function summarizeContent(req: Request<object, object, { content: string }>, res: Response) {
+	try {
+		const { content } = req.body;
+
+		if (!content || content.trim() === '') {
+			return res.status(400).json({ error: 'Content is required' });
+		}
+
+		const summary = await aiService.summarizeContent(content);
+		res.json({ summary });
+	} catch (error) {
+		console.error('Error summarizing content:', error);
+		res.status(500).json({ error: 'Failed to summarize content' });
 	}
 }

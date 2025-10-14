@@ -3,6 +3,7 @@ import Modal from './Modal';
 import VoiceRecorder from './VoiceRecorder';
 import type { Note } from '../../types';
 import { notesService } from '../../services/notesService';
+import { aiService } from '../../services/aiService';
 import styles from './NoteModal.module.css';
 
 interface NoteModalProps {
@@ -22,6 +23,7 @@ export default function NoteModal(props: NoteModalProps) {
 	const [voiceNoteFilename, setVoiceNoteFilename] = createSignal<string | null>(null);
 	const [isUploadingVoice, setIsUploadingVoice] = createSignal(false);
 	const [isRecording, setIsRecording] = createSignal(false);
+	const [isSummarizing, setIsSummarizing] = createSignal(false);
 
 	// Reset form when modal opens or note changes
 	createEffect(() => {
@@ -64,6 +66,41 @@ export default function NoteModal(props: NoteModalProps) {
 		const mins = Math.floor(seconds / 60);
 		const secs = seconds % 60;
 		return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+	};
+
+	// Count words in content
+	const getWordCount = (text: string): number => {
+		return text.trim().split(/\s+/).filter(word => word.length > 0).length;
+	};
+
+	// Check if content has more than 50 words
+	const canSummarize = () => {
+		const trimmedContent = content().trim();
+		return trimmedContent && getWordCount(trimmedContent) > 50;
+	};
+
+	const handleSummarizeContent = async () => {
+		const trimmedContent = content().trim();
+		if (!trimmedContent) {
+			alert('Please enter note content first');
+			return;
+		}
+
+		if (getWordCount(trimmedContent) <= 50) {
+			alert('Content must have more than 50 words to summarize');
+			return;
+		}
+
+		try {
+			setIsSummarizing(true);
+			const summary = await aiService.summarizeContent(trimmedContent);
+			setContent(summary);
+		} catch (error) {
+			console.error('Failed to summarize content:', error);
+			alert('Failed to summarize content. Please try again.');
+		} finally {
+			setIsSummarizing(false);
+		}
 	};
 
 	const handleSubmit = async (e: Event) => {
@@ -128,6 +165,26 @@ export default function NoteModal(props: NoteModalProps) {
 						rows={6}
 						required
 					/>
+					<button
+						type="button"
+						onClick={handleSummarizeContent}
+						class={styles.aiSummarizeButton}
+						disabled={isSummarizing() || !canSummarize()}
+						title={!canSummarize() ? 'Content must have more than 50 words' : 'Summarize content'}
+					>
+						<Show when={isSummarizing()} fallback={
+							<>
+								<i class="fas fa-compress-alt" />
+								Summarize Content ({getWordCount(content())} words)
+							</>
+						}>
+							<i class="fas fa-spinner fa-spin" />
+							Summarizing...
+						</Show>
+					</button>
+					<p class={styles.hint}>
+						Minimum words to get AI summarization should be 50.
+					</p>
 				</div>
 
 				<div class={styles.formGroup}>
@@ -205,14 +262,14 @@ export default function NoteModal(props: NoteModalProps) {
 						type="button"
 						onClick={() => props.onClose()}
 						class={styles.cancelButton}
-						disabled={props.isLoading || isUploadingVoice() || isRecording()}
+						disabled={props.isLoading || isUploadingVoice() || isRecording() || isSummarizing()}
 					>
 						Cancel
 					</button>
 					<button
 						type="submit"
 						class={styles.saveButton}
-						disabled={props.isLoading || isUploadingVoice() || isRecording() || !content().trim()}
+						disabled={props.isLoading || isUploadingVoice() || isRecording() || isSummarizing() || !content().trim()}
 					>
 						<Show when={props.isLoading || isUploadingVoice()} fallback="Save">
 							<i class="fas fa-spinner fa-spin mr-2" />

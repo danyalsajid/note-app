@@ -6,12 +6,16 @@ import {
 	updateNote,
 	deleteNote,
 	searchNotes,
+	summarizeContent,
 } from '../controllers/notes.controller.js';
 
 const router = express.Router();
 
 // GET /api/notes/search - Search notes (must be before /:id route)
 router.get('/notes/search', searchNotes);
+
+// POST /api/notes/summarize - Summarize note content (must be before /:id route)
+router.post('/notes/summarize', summarizeContent);
 
 // GET /api/notes - Get all notes
 router.get('/notes', getAllNotes);
