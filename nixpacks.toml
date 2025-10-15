@@ -1,8 +1,8 @@
 [phases.setup]
-nixPkgs = ['nodejs_22', 'python3', 'gcc', 'pkg-config']
+nixPkgs = ['nodejs_23', 'python3', 'gcc', 'pkg-config']
 
 [phases.install]
-cmds = ['npm ci']
+cmds = ['npm ci --include=optional']
 
 [phases.build]
 cmds = ['npm run build --workspace=apps/web', 'npm run build --workspace=apps/server']
