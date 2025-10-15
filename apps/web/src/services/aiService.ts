@@ -1,4 +1,6 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+import { API_BASE_URL } from '../config/api';
+
+const API_URL = `${API_BASE_URL}/api`;
 
 class AIService {
 	/**
@@ -9,7 +11,7 @@ class AIService {
 			throw new Error('Content must be at least 50 characters long to summarize.');
 		}
 		try {
-			const response = await fetch(`${API_BASE_URL}/notes/summarize`, {
+			const response = await fetch(`${API_URL}/notes/summarize`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',

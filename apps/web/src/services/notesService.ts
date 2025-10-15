@@ -1,8 +1,8 @@
 import type { Note } from '../types';
 import { getAuthHeaders, getAuthHeadersForFormData } from '../utils/authHeaders';
+import { API_BASE_URL } from '../config/api';
 
-const API_BASE_URL =
-	import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+const API_URL = `${API_BASE_URL}/api`;
 
 export interface CreateNoteBody {
 	content: string;
@@ -25,7 +25,7 @@ export const notesService = {
 	 * Create a new note
 	 */
 	async createNote(data: CreateNoteBody): Promise<Note> {
-		const response = await fetch(`${API_BASE_URL}/notes`, {
+		const response = await fetch(`${API_URL}/notes`, {
 			method: 'POST',
 			headers: getAuthHeaders(),
 			body: JSON.stringify(data),
@@ -41,7 +41,7 @@ export const notesService = {
 	 * Update a note
 	 */
 	async updateNote(id: string, data: UpdateNoteBody): Promise<Note> {
-		const response = await fetch(`${API_BASE_URL}/notes/${id}`, {
+		const response = await fetch(`${API_URL}/notes/${id}`, {
 			method: 'PUT',
 			headers: getAuthHeaders(),
 			body: JSON.stringify(data),
@@ -57,7 +57,7 @@ export const notesService = {
 	 * Delete a note
 	 */
 	async deleteNote(id: string): Promise<{ message: string }> {
-		const response = await fetch(`${API_BASE_URL}/notes/${id}`, {
+		const response = await fetch(`${API_URL}/notes/${id}`, {
 			method: 'DELETE',
 			headers: getAuthHeaders(),
 		});
