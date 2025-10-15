@@ -1,4 +1,5 @@
 import { createSignal, onCleanup } from 'solid-js';
+import OnlineStatusIndicator from '../ui/OnlineStatusIndicator';
 import styles from './Header.module.css';
 
 interface HeaderProps {
@@ -58,6 +59,9 @@ export default function Header(props: HeaderProps) {
 					/>
 				</div>
 			</form>
+
+			{/* Online Status Indicator */}
+			<OnlineStatusIndicator />
 
 			{/* Logout Button */}
 			<button

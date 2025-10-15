@@ -1,4 +1,4 @@
-import { Show, For, createEffect, createSignal } from 'solid-js';
+import { Show, For, createEffect, createSignal, onMount } from 'solid-js';
 import { useParams, useNavigate } from '@solidjs/router';
 import NotesSection from './NotesSection';
 import ItemHeader from '../tree/ItemHeader';
@@ -7,6 +7,9 @@ import HierarchyItemModal from '../ui/HierarchyItemModal';
 import { useNavigation } from '../../contexts';
 import { notesService } from '../../services/notesService';
 import { hierarchyService } from '../../services/hierarchyService';
+import { offlineStorage } from '../../services/offlineStorage';
+import { syncService } from '../../services/syncService';
+import { useOnlineStatus } from '../../hooks/useOnlineStatus';
 import type { Note, HierarchyNode } from '../../types';
 import {
 	getTypeLabel,
@@ -20,12 +23,46 @@ export default function MainContent() {
 	const params = useParams();
 	const navigation = useNavigation();
 	const navigate = useNavigate();
+	const isOnline = useOnlineStatus();
 	const [isModalOpen, setIsModalOpen] = createSignal(false);
 	const [isHierarchyModalOpen, setIsHierarchyModalOpen] = createSignal(false);
 	const [editingNote, setEditingNote] = createSignal<Note | null>(null);
 	const [editingHierarchyItem, setEditingHierarchyItem] = createSignal<HierarchyNode | null>(null);
 	const [isSaving, setIsSaving] = createSignal(false);
 	const [isHierarchySaving, setIsHierarchySaving] = createSignal(false);
+	const [isSyncing, setIsSyncing] = createSignal(false);
+
+	// Sync pending notes when coming back online
+	createEffect(() => {
+		if (isOnline() && syncService.hasPendingNotes() && !isSyncing()) {
+			void syncPendingNotes();
+		}
+	});
+
+	// Initial sync check on mount
+	onMount(() => {
+		if (isOnline() && syncService.hasPendingNotes()) {
+			void syncPendingNotes();
+		}
+	});
+
+	const syncPendingNotes = async () => {
+		setIsSyncing(true);
+		try {
+			const result = await syncService.syncPendingNotes();
+			if (result.synced > 0) {
+				// Refresh current item to show synced notes
+				const currentId = params.id;
+				if (currentId) {
+					await navigation.fetchHierarchyItem(currentId);
+				}
+			}
+		} catch {
+			// Silently handle sync errors
+		} finally {
+			setIsSyncing(false);
+		}
+	};
 
 	// Fetch item when params.id changes
 	createEffect(() => {
@@ -70,6 +107,56 @@ export default function MainContent() {
 
 			const currentNote = editingNote();
 			
+			// Check if this is a voice note (should not be saved offline)
+			const hasVoiceNote = voiceNoteFilename !== null && voiceNoteFilename !== undefined;
+			
+			// If offline and it's a typed note (no voice), save to localStorage
+			if (!isOnline() && !hasVoiceNote) {
+				if (currentNote) {
+					// Update existing note offline
+					offlineStorage.addPendingNote({
+						id: offlineStorage.generateTempId(),
+						type: 'update',
+						data: {
+							noteId: currentNote.id,
+							content,
+							tags,
+							voiceNoteFilename: null,
+							voiceNoteDuration: null,
+						},
+						timestamp: Date.now(),
+					});
+				} else {
+					// Create new note offline
+					offlineStorage.addPendingNote({
+						id: offlineStorage.generateTempId(),
+						type: 'create',
+						data: {
+							content,
+							attachedToId: selectedItem.id,
+							attachedToType: selectedItem.type,
+							tags,
+							voiceNoteFilename: null,
+							voiceNoteDuration: null,
+						},
+						timestamp: Date.now(),
+					});
+				}
+				
+				setIsModalOpen(false);
+				setEditingNote(null);
+				alert('You are offline. Note saved locally and will be synced when you are back online.');
+				return;
+			}
+			
+			// If offline and has voice note, show error
+			if (!isOnline() && hasVoiceNote) {
+				alert('Cannot save voice notes while offline. Please connect to the internet.');
+				setIsSaving(false);
+				return;
+			}
+			
+			// Online - save normally
 			if (currentNote) {
 				// Update existing note
 				await notesService.updateNote(currentNote.id, {
@@ -98,8 +185,7 @@ export default function MainContent() {
 
 			setIsModalOpen(false);
 			setEditingNote(null);
-		} catch (error) {
-			console.error('Failed to save note:', error);
+		} catch {
 			alert('Failed to save note. Please try again.');
 		} finally {
 			setIsSaving(false);
