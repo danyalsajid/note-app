@@ -1,19 +1,22 @@
 import { type Component } from 'solid-js';
+import { useNavigate } from '@solidjs/router';
 import Header from '../components/layout/Header';
 import Sidebar from '../components/layout/Sidebar';
 import MainContent from '../components/notes/MainContent';
-import { useNavigation } from '../contexts';
+import { useNavigation, useAuth } from '../contexts';
 
 const HomePage: Component = () => {
 	const navigation = useNavigation();
+	const auth = useAuth();
+	const navigate = useNavigate();
 
 	const handleSearch = async (query: string) => {
 		await navigation.searchNotes(query);
 	};
 
-	const handleLogout = () => {
-		console.log('Logging out...');
-		// TODO: Implement logout functionality
+	const handleLogout = async () => {
+		await auth.logout();
+		navigate('/login');
 	};
 
 	return (

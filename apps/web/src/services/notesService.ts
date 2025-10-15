@@ -1,4 +1,5 @@
 import type { Note } from '../types';
+import { getAuthHeaders, getAuthHeadersForFormData } from '../utils/authHeaders';
 
 const API_BASE_URL =
 	import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
@@ -26,9 +27,7 @@ export const notesService = {
 	async createNote(data: CreateNoteBody): Promise<Note> {
 		const response = await fetch(`${API_BASE_URL}/notes`, {
 			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
+			headers: getAuthHeaders(),
 			body: JSON.stringify(data),
 		});
 		if (!response.ok) {
@@ -44,9 +43,7 @@ export const notesService = {
 	async updateNote(id: string, data: UpdateNoteBody): Promise<Note> {
 		const response = await fetch(`${API_BASE_URL}/notes/${id}`, {
 			method: 'PUT',
-			headers: {
-				'Content-Type': 'application/json',
-			},
+			headers: getAuthHeaders(),
 			body: JSON.stringify(data),
 		});
 		if (!response.ok) {
@@ -62,6 +59,7 @@ export const notesService = {
 	async deleteNote(id: string): Promise<{ message: string }> {
 		const response = await fetch(`${API_BASE_URL}/notes/${id}`, {
 			method: 'DELETE',
+			headers: getAuthHeaders(),
 		});
 		if (!response.ok) {
 			const error = await response.json();
@@ -78,7 +76,10 @@ export const notesService = {
 			return [];
 		}
 		const response = await fetch(
-			`${API_BASE_URL}/notes/search?q=${encodeURIComponent(query)}`
+			`${API_BASE_URL}/notes/search?q=${encodeURIComponent(query)}`,
+			{
+				headers: getAuthHeaders(),
+			}
 		);
 		if (!response.ok) {
 			const error = await response.json();
@@ -96,6 +97,7 @@ export const notesService = {
 
 		const response = await fetch(`${API_BASE_URL}/voice-notes/upload`, {
 			method: 'POST',
+			headers: getAuthHeadersForFormData(),
 			body: formData,
 		});
 
@@ -113,6 +115,7 @@ export const notesService = {
 	async deleteVoiceNote(filename: string): Promise<void> {
 		const response = await fetch(`${API_BASE_URL}/voice-notes/${filename}`, {
 			method: 'DELETE',
+			headers: getAuthHeaders(),
 		});
 
 		if (!response.ok) {

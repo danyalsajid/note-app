@@ -8,28 +8,29 @@ import {
 	searchNotes,
 	summarizeContent,
 } from '../controllers/notes.controller.js';
+import { requireAuth } from '../middleware/auth.middleware.js';
 
 const router = express.Router();
 
 // GET /api/notes/search - Search notes (must be before /:id route)
-router.get('/notes/search', searchNotes);
+router.get('/notes/search', requireAuth, searchNotes);
 
 // POST /api/notes/summarize - Summarize note content (must be before /:id route)
-router.post('/notes/summarize', summarizeContent);
+router.post('/notes/summarize', requireAuth, summarizeContent);
 
 // GET /api/notes - Get all notes
-router.get('/notes', getAllNotes);
+router.get('/notes', requireAuth, getAllNotes);
 
 // POST /api/notes - Create a new note
-router.post('/notes', createNote);
+router.post('/notes', requireAuth, createNote);
 
 // GET /api/notes/:id - Get a specific note
-router.get('/notes/:id', getNoteById);
+router.get('/notes/:id', requireAuth, getNoteById);
 
 // PUT /api/notes/:id - Update a note
-router.put('/notes/:id', updateNote);
+router.put('/notes/:id', requireAuth, updateNote);
 
 // DELETE /api/notes/:id - Delete a note
-router.delete('/notes/:id', deleteNote);
+router.delete('/notes/:id', requireAuth, deleteNote);
 
 export default router;

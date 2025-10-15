@@ -22,3 +22,12 @@ export type {
 	ApiResponse,
 	DeleteResponse,
 } from './api';
+
+// Re-export auth types
+export type {
+	User,
+	LoginRequest,
+	SignupRequest,
+	AuthResponse,
+	AuthError,
+} from './auth';

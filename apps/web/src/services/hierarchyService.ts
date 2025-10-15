@@ -5,6 +5,7 @@ import type {
 	ApiResponse,
 	DeleteResponse,
 } from '../types';
+import { getAuthHeaders } from '../utils/authHeaders';
 
 const API_BASE_URL =
 	import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
@@ -14,7 +15,9 @@ export const hierarchyService = {
 	 * Fetch the complete hierarchy tree
 	 */
 	async getHierarchyTree(): Promise<HierarchyResponse> {
-		const response = await fetch(`${API_BASE_URL}/hierarchy/tree`);
+		const response = await fetch(`${API_BASE_URL}/hierarchy/tree`, {
+			headers: getAuthHeaders(),
+		});
 		if (!response.ok) {
 			throw new Error('Failed to fetch hierarchy tree');
 		}
@@ -29,9 +32,7 @@ export const hierarchyService = {
 	): Promise<ApiResponse<HierarchyNode>> {
 		const response = await fetch(`${API_BASE_URL}/hierarchy`, {
 			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
+			headers: getAuthHeaders(),
 			body: JSON.stringify(data),
 		});
 		if (!response.ok) {
@@ -50,9 +51,7 @@ export const hierarchyService = {
 	): Promise<ApiResponse<HierarchyNode>> {
 		const response = await fetch(`${API_BASE_URL}/hierarchy/${id}`, {
 			method: 'PUT',
-			headers: {
-				'Content-Type': 'application/json',
-			},
+			headers: getAuthHeaders(),
 			body: JSON.stringify(data),
 		});
 		if (!response.ok) {
@@ -68,6 +67,7 @@ export const hierarchyService = {
 	async deleteHierarchyItem(id: string): Promise<DeleteResponse> {
 		const response = await fetch(`${API_BASE_URL}/hierarchy/${id}`, {
 			method: 'DELETE',
+			headers: getAuthHeaders(),
 		});
 		if (!response.ok) {
 			const error = await response.json();
@@ -80,7 +80,9 @@ export const hierarchyService = {
 	 * Get a single hierarchy item by ID
 	 */
 	async getHierarchyItem(id: string): Promise<HierarchyNode> {
-		const response = await fetch(`${API_BASE_URL}/hierarchy/${id}`);
+		const response = await fetch(`${API_BASE_URL}/hierarchy/${id}`, {
+			headers: getAuthHeaders(),
+		});
 		if (!response.ok) {
 			throw new Error('Failed to fetch hierarchy item');
 		}
