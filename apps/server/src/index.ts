@@ -65,9 +65,18 @@ if (fs.existsSync(webDistPath)) {
 	console.error('WARNING: Web dist directory does not exist!');
 }
 
+// Add logging middleware for all requests
+app.use((req: Request, res: Response, next) => {
+	console.log(`${req.method} ${req.path}`);
+	next();
+});
+
 app.use(express.static(webDistPath, { 
 	fallthrough: true,
-	index: false // Don't serve index.html automatically for directories
+	index: false, // Don't serve index.html automatically for directories
+	setHeaders: (res, filePath) => {
+		console.log('Serving static file:', filePath);
+	}
 }));
 
 // API routes
@@ -106,8 +115,19 @@ app.use((req: Request, res: Response) => {
 			}
 		});
 	} else {
+		console.log('Asset not found:', req.path);
 		res.status(404).send('Not found');
 	}
+});
+
+// Error handler - must be last
+app.use((err: Error, req: Request, res: Response, _next: express.NextFunction) => {
+	console.error('Express error handler caught:', err);
+	res.status(500).json({ 
+		error: 'Internal server error',
+		message: err.message,
+		path: req.path
+	});
 });
 
 // Initialize database and start server
