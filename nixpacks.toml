@@ -2,7 +2,7 @@
 nixPkgs = ['nodejs_23', 'python3', 'gcc', 'pkg-config']
 
 [phases.install]
-cmds = ['npm install --no-audit --prefer-offline']
+cmds = ['rm -rf node_modules package-lock.json', 'npm install --no-audit']
 
 [phases.build]
 cmds = ['npm run build --workspace=apps/web', 'npm run build --workspace=apps/server']
