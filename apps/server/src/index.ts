@@ -1,5 +1,6 @@
 import cors from 'cors';
 import express, { type Request, type Response } from 'express';
+import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { initializeDatabase } from './db/database.js';
@@ -11,7 +12,10 @@ const __dirname = path.dirname(__filename);
 
 // CORS configuration
 const corsOptions = {
-	origin: function (origin: any, callback: any) {
+	origin: function (
+		origin: string | undefined,
+		callback: (err: Error | null, allow?: boolean) => void
+	) {
 		// Allow requests with no origin (mobile apps, etc.)
 		if (!origin) return callback(null, true);
 
@@ -41,15 +45,30 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 // Serve static files from the web app's build directory
-// In development: from src/index.ts -> ../../web/dist
-// In production: from dist/src/index.js -> ../../../web/dist
-const pathParts = __dirname.split(path.sep);
-const inDist = pathParts.includes('dist');
-const webDistPath = inDist
-	? path.join(__dirname, '../../../web/dist')
-	: path.join(__dirname, '../../web/dist');
+// Find the project root (where apps/ folder is located)
+let projectRoot = __dirname;
+while (!fs.existsSync(path.join(projectRoot, 'apps')) && projectRoot !== '/') {
+	projectRoot = path.dirname(projectRoot);
+}
 
-app.use(express.static(webDistPath));
+const webDistPath = path.join(projectRoot, 'apps', 'web', 'dist');
+
+console.log('Current directory:', __dirname);
+console.log('Project root:', projectRoot);
+console.log('Web dist path:', webDistPath);
+console.log('Web dist exists:', fs.existsSync(webDistPath));
+
+if (fs.existsSync(webDistPath)) {
+	const files = fs.readdirSync(webDistPath);
+	console.log('Files in web dist:', files);
+} else {
+	console.error('WARNING: Web dist directory does not exist!');
+}
+
+app.use(express.static(webDistPath, { 
+	fallthrough: true,
+	index: false // Don't serve index.html automatically for directories
+}));
 
 // API routes
 import authRoutes from './api/routes/auth.routes.js';
@@ -76,7 +95,19 @@ app.use('/api', voiceNotesRoutes);
 
 // Catch-all handler for client-side routing
 app.use((req: Request, res: Response) => {
-	res.sendFile(path.join(webDistPath, 'index.html'));
+	// Only serve index.html for non-API routes and non-asset routes
+	if (!req.path.startsWith('/api') && !req.path.startsWith('/assets')) {
+		const indexPath = path.join(webDistPath, 'index.html');
+		console.log('Serving index.html from:', indexPath);
+		res.sendFile(indexPath, (err) => {
+			if (err) {
+				console.error('Error serving index.html:', err);
+				res.status(500).send('Error loading application');
+			}
+		});
+	} else {
+		res.status(404).send('Not found');
+	}
 });
 
 // Initialize database and start server
