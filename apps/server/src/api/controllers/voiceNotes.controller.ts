@@ -3,16 +3,11 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs/promises';
 
-// Extend Express Request type to include multer file
-interface MulterRequest extends Request {
-	file?: Express.Multer.File;
-}
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // POST /api/voice-notes/upload - Upload a voice note
-export async function uploadVoiceNote(req: MulterRequest, res: Response) {
+export async function uploadVoiceNote(req: Request, res: Response) {
 	try {
 		if (!req.file) {
 			return res.status(400).json({ error: 'No file uploaded' });

@@ -101,7 +101,7 @@ export async function updateNote(
 		}
 
 		// If voice note is being removed (set to null) and there was an old one, delete the file
-		if (voiceNoteFilename === null && existingNote[0].voiceNoteFilename) {
+		if (voiceNoteFilename === null && existingNote[0]?.voiceNoteFilename) {
 			try {
 				const pathParts = __dirname.split(path.sep);
 				const inDist = pathParts.includes('dist');
@@ -149,6 +149,10 @@ export async function deleteNote(req: Request<{ id: string }>, res: Response) {
 		}
 
 		const note = noteToDelete[0];
+		
+		if (!note) {
+			return res.status(404).json({ error: 'Note not found' });
+		}
 		
 		// Delete the voice note file if it exists
 		if (note.voiceNoteFilename) {
