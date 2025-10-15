@@ -42,6 +42,8 @@ export const initializeDatabase = async (): Promise<void> => {
         attached_to_id TEXT NOT NULL,
         attached_to_type TEXT NOT NULL,
         tags TEXT,
+        voice_note_filename TEXT,
+        voice_note_duration INTEGER,
         created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (attached_to_id) REFERENCES hierarchy_nodes(id) ON DELETE CASCADE
