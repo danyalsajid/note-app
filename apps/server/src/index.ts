@@ -68,7 +68,14 @@ const corsOptions = {
 			'http://127.0.0.1:3000',
 			'http://localhost:5173', // Vite dev server
 			'http://127.0.0.1:5173',
+			'https://note-app-production-41f6.up.railway.app', // Production URL
 		];
+
+		// Also allow if origin matches the current host (for production)
+		const currentHost = process.env.RAILWAY_PUBLIC_DOMAIN;
+		if (currentHost && origin === `https://${currentHost}`) {
+			return callback(null, true);
+		}
 
 		if (allowedOrigins.includes(origin)) {
 			return callback(null, true);
