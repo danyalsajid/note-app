@@ -95,7 +95,7 @@ export const notesService = {
 		const formData = new FormData();
 		formData.append('voiceNote', audioBlob, 'voice-note.webm');
 
-		const response = await fetch(`${API_BASE_URL}/voice-notes/upload`, {
+		const response = await fetch(`${API_URL}/voice-notes/upload`, {
 			method: 'POST',
 			headers: getAuthHeadersForFormData(),
 			body: formData,
@@ -113,7 +113,7 @@ export const notesService = {
 	 * Delete a voice note file
 	 */
 	async deleteVoiceNote(filename: string): Promise<void> {
-		const response = await fetch(`${API_BASE_URL}/voice-notes/${filename}`, {
+		const response = await fetch(`${API_URL}/voice-notes/${filename}`, {
 			method: 'DELETE',
 			headers: getAuthHeaders(),
 		});
@@ -128,6 +128,6 @@ export const notesService = {
 	 * Get voice note URL
 	 */
 	getVoiceNoteUrl(filename: string): string {
-		return `${API_BASE_URL}/voice-notes/${filename}`;
+		return `${API_URL}/voice-notes/${filename}`;
 	},
 };
