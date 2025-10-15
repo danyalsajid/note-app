@@ -1,4 +1,4 @@
-import { createSignal, Show, createEffect } from 'solid-js';
+import { createSignal, Show, createEffect, onCleanup } from 'solid-js';
 import Modal from './Modal';
 import VoiceRecorder from './VoiceRecorder';
 import type { Note } from '../../types';
@@ -21,6 +21,7 @@ export default function NoteModal(props: NoteModalProps) {
 	const [voiceNoteBlob, setVoiceNoteBlob] = createSignal<Blob | null>(null);
 	const [voiceNoteDuration, setVoiceNoteDuration] = createSignal<number>(0);
 	const [voiceNoteFilename, setVoiceNoteFilename] = createSignal<string | null>(null);
+	const [voiceNoteBlobUrl, setVoiceNoteBlobUrl] = createSignal<string | null>(null);
 	const [isUploadingVoice, setIsUploadingVoice] = createSignal(false);
 	const [isRecording, setIsRecording] = createSignal(false);
 	const [isSummarizing, setIsSummarizing] = createSignal(false);
@@ -38,6 +39,37 @@ export default function NoteModal(props: NoteModalProps) {
 			setVoiceNoteBlob(null);
 			setShowVoiceRecorder(false);
 			setIsRecording(false);
+		}
+	});
+
+	// Fetch voice note blob when filename changes
+	createEffect(async () => {
+		const filename = voiceNoteFilename();
+		const hasBlob = voiceNoteBlob();
+		
+		// Cleanup previous blob URL
+		const prevUrl = voiceNoteBlobUrl();
+		if (prevUrl) {
+			URL.revokeObjectURL(prevUrl);
+			setVoiceNoteBlobUrl(null);
+		}
+		
+		// Fetch new blob if we have a filename but no blob
+		if (filename && !hasBlob) {
+			try {
+				const blobUrl = await notesService.fetchVoiceNoteBlob(filename);
+				setVoiceNoteBlobUrl(blobUrl);
+			} catch (error) {
+				console.error('Failed to load voice note:', error);
+			}
+		}
+	});
+
+	// Cleanup blob URL on unmount
+	onCleanup(() => {
+		const url = voiceNoteBlobUrl();
+		if (url) {
+			URL.revokeObjectURL(url);
 		}
 	});
 
@@ -229,10 +261,10 @@ export default function NoteModal(props: NoteModalProps) {
 									<i class="fas fa-microphone text-blue-600 mr-2" />
 									<span>Voice note attached ({formatTime(voiceNoteDuration())})</span>
 								</div>
-								<Show when={voiceNoteFilename() && !voiceNoteBlob()}>
+								<Show when={voiceNoteFilename() && !voiceNoteBlob() && voiceNoteBlobUrl()}>
 									<audio 
 										controls 
-										src={notesService.getVoiceNoteUrl(voiceNoteFilename()!)} 
+										src={voiceNoteBlobUrl()!} 
 										class={styles.audioPreview}
 									/>
 								</Show>

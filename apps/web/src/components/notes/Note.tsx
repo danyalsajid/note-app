@@ -13,6 +13,7 @@ interface NoteProps {
 
 export default function Note(props: NoteProps) {
 	const [showMenu, setShowMenu] = createSignal(false);
+	const [voiceNoteUrl, setVoiceNoteUrl] = createSignal<string | null>(null);
 	let menuContainerRef: HTMLDivElement | undefined;
 
 	const handleEdit = () => {
@@ -33,15 +34,31 @@ export default function Note(props: NoteProps) {
 		}
 	};
 
-	onMount(() => {
+	onMount(async () => {
 		if (typeof window !== 'undefined') {
 			document.addEventListener('click', handleClickOutside);
+		}
+
+		// Fetch voice note blob if present
+		if (props.note.voiceNoteFilename) {
+			try {
+				const blobUrl = await notesService.fetchVoiceNoteBlob(props.note.voiceNoteFilename);
+				setVoiceNoteUrl(blobUrl);
+			} catch (error) {
+				console.error('Failed to load voice note:', error);
+			}
 		}
 	});
 
 	onCleanup(() => {
 		if (typeof window !== 'undefined') {
 			document.removeEventListener('click', handleClickOutside);
+		}
+
+		// Cleanup blob URL
+		const url = voiceNoteUrl();
+		if (url) {
+			URL.revokeObjectURL(url);
 		}
 	});
 
@@ -62,7 +79,7 @@ export default function Note(props: NoteProps) {
 					</p>
 					
 					{/* Voice Note Player */}
-					<Show when={props.note.voiceNoteFilename}>
+					<Show when={props.note.voiceNoteFilename && voiceNoteUrl()}>
 						<div class={styles.voiceNote}>
 							<div class={styles.voiceNoteHeader}>
 								<i class="fas fa-microphone text-blue-600 mr-2" />
@@ -72,7 +89,7 @@ export default function Note(props: NoteProps) {
 							</div>
 							<audio 
 								controls 
-								src={notesService.getVoiceNoteUrl(props.note.voiceNoteFilename!)} 
+								src={voiceNoteUrl()!} 
 								class={styles.audioPlayer}
 							/>
 						</div>

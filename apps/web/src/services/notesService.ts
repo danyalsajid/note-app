@@ -130,4 +130,21 @@ export const notesService = {
 	getVoiceNoteUrl(filename: string): string {
 		return `${API_URL}/voice-notes/${filename}`;
 	},
+
+	/**
+	 * Fetch voice note as blob with authentication
+	 */
+	async fetchVoiceNoteBlob(filename: string): Promise<string> {
+		const response = await fetch(`${API_URL}/voice-notes/${filename}`, {
+			method: 'GET',
+			headers: getAuthHeaders(),
+		});
+
+		if (!response.ok) {
+			throw new Error('Failed to fetch voice note');
+		}
+
+		const blob = await response.blob();
+		return URL.createObjectURL(blob);
+	},
 };
