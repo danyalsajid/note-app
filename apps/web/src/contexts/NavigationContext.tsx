@@ -17,6 +17,10 @@ type NavigationContextType = {
 	searchResults: () => Note[];
 	searchQuery: () => string;
 	isSearching: () => boolean;
+	availableTags: () => string[];
+	selectedTag: () => string | null;
+	tagFilteredNotes: () => Note[];
+	isFilteringByTag: () => boolean;
 	
 	// Actions
 	fetchHierarchyTree: () => Promise<void>;
@@ -35,6 +39,9 @@ type NavigationContextType = {
 	clearSelectedItem: () => void;
 	searchNotes: (query: string) => Promise<void>;
 	clearSearch: () => void;
+	fetchAllTags: () => Promise<void>;
+	filterByTag: (tag: string) => Promise<void>;
+	clearTagFilter: () => void;
 };
 
 /**
@@ -55,6 +62,10 @@ export const NavigationProvider: ParentComponent = (props) => {
 	const [searchResults, setSearchResults] = createSignal<Note[]>([]);
 	const [searchQuery, setSearchQuery] = createSignal('');
 	const [isSearching, setIsSearching] = createSignal(false);
+	const [availableTags, setAvailableTags] = createSignal<string[]>([]);
+	const [selectedTag, setSelectedTag] = createSignal<string | null>(null);
+	const [tagFilteredNotes, setTagFilteredNotes] = createSignal<Note[]>([]);
+	const [isFilteringByTag, setIsFilteringByTag] = createSignal(false);
 
 	/**
 	 * Fetch the complete hierarchy tree
@@ -175,6 +186,53 @@ export const NavigationProvider: ParentComponent = (props) => {
 		setIsSearching(false);
 	};
 
+	/**
+	 * Fetch all available tags
+	 */
+	const fetchAllTags = async () => {
+		try {
+			const tags = await notesService.getAllTags();
+			setAvailableTags(tags);
+		} catch (err) {
+			console.error('Error fetching tags:', err);
+			setAvailableTags([]);
+		}
+	};
+
+	/**
+	 * Filter notes by tag
+	 */
+	const filterByTag = async (tag: string) => {
+		setSelectedTag(tag);
+		
+		if (!tag || tag.trim() === '') {
+			setTagFilteredNotes([]);
+			setIsFilteringByTag(false);
+			return;
+		}
+
+		setIsFilteringByTag(true);
+		setError(null);
+		try {
+			const results = await notesService.getNotesByTag(tag);
+			setTagFilteredNotes(results);
+		} catch (err) {
+			setError(err instanceof Error ? err.message : 'Failed to filter notes by tag');
+			setTagFilteredNotes([]);
+		} finally {
+			setIsFilteringByTag(false);
+		}
+	};
+
+	/**
+	 * Clear tag filter
+	 */
+	const clearTagFilter = () => {
+		setSelectedTag(null);
+		setTagFilteredNotes([]);
+		setIsFilteringByTag(false);
+	};
+
 	// Context value
 	const contextValue: NavigationContextType = {
 		// State
@@ -186,6 +244,10 @@ export const NavigationProvider: ParentComponent = (props) => {
 		searchResults,
 		searchQuery,
 		isSearching,
+		availableTags,
+		selectedTag,
+		tagFilteredNotes,
+		isFilteringByTag,
 		
 		// Actions
 		fetchHierarchyTree,
@@ -196,6 +258,9 @@ export const NavigationProvider: ParentComponent = (props) => {
 		clearSelectedItem,
 		searchNotes,
 		clearSearch,
+		fetchAllTags,
+		filterByTag,
+		clearTagFilter,
 	};
 
 	return (

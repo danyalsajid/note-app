@@ -224,3 +224,58 @@ export async function summarizeContent(req: Request<object, object, { content: s
 		res.status(500).json({ error: 'Failed to summarize content' });
 	}
 }
+
+// GET /api/notes/tags - Get all unique tags from notes
+export async function getAllTags(req: Request, res: Response) {
+	try {
+		const allNotes = await db.select().from(notes);
+		const tagsSet = new Set<string>();
+
+		// Extract all tags from notes
+		allNotes.forEach(note => {
+			if (note.tags) {
+				try {
+					const parsedTags = JSON.parse(note.tags);
+					if (Array.isArray(parsedTags)) {
+						parsedTags.forEach(tag => {
+							if (tag && typeof tag === 'string') {
+								tagsSet.add(tag.trim());
+							}
+						});
+					}
+				} catch (error) {
+					// Skip invalid JSON
+					console.error('Error parsing tags:', error);
+				}
+			}
+		});
+
+		const uniqueTags = Array.from(tagsSet).sort();
+		res.json(uniqueTags);
+	} catch (error) {
+		console.error('Error fetching tags:', error);
+		res.status(500).json({ error: 'Failed to fetch tags' });
+	}
+}
+
+// GET /api/notes/by-tag/:tag - Get notes by tag
+export async function getNotesByTag(req: Request<{ tag: string }>, res: Response) {
+	try {
+		const { tag } = req.params;
+
+		if (!tag || tag.trim() === '') {
+			return res.status(400).json({ error: 'Tag is required' });
+		}
+
+		const searchPattern = `%"${tag.trim()}"%`;
+		const filteredNotes = await db
+			.select()
+			.from(notes)
+			.where(like(notes.tags, searchPattern));
+
+		res.json(filteredNotes);
+	} catch (error) {
+		console.error('Error fetching notes by tag:', error);
+		res.status(500).json({ error: 'Failed to fetch notes by tag' });
+	}
+}

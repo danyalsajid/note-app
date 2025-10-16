@@ -147,4 +147,38 @@ export const notesService = {
 		const blob = await response.blob();
 		return URL.createObjectURL(blob);
 	},
+
+	/**
+	 * Get all unique tags from notes
+	 */
+	async getAllTags(): Promise<string[]> {
+		const response = await fetch(`${API_URL}/notes/tags`, {
+			headers: getAuthHeaders(),
+		});
+		if (!response.ok) {
+			const error = await response.json();
+			throw new Error(error.message || 'Failed to fetch tags');
+		}
+		return response.json();
+	},
+
+	/**
+	 * Get notes by tag
+	 */
+	async getNotesByTag(tag: string): Promise<Note[]> {
+		if (!tag || tag.trim() === '') {
+			return [];
+		}
+		const response = await fetch(
+			`${API_URL}/notes/by-tag/${encodeURIComponent(tag)}`,
+			{
+				headers: getAuthHeaders(),
+			}
+		);
+		if (!response.ok) {
+			const error = await response.json();
+			throw new Error(error.message || 'Failed to fetch notes by tag');
+		}
+		return response.json();
+	},
 };

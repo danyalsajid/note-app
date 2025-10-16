@@ -3,6 +3,7 @@ import { useNavigate } from '@solidjs/router';
 import Header from '../components/layout/Header';
 import Sidebar from '../components/layout/Sidebar';
 import MainContent from '../components/notes/MainContent';
+import TagFilter from '../components/ui/TagFilter';
 import { useNavigation, useAuth } from '../contexts';
 
 const HomePage: Component = () => {
@@ -24,6 +25,7 @@ const HomePage: Component = () => {
 			<Sidebar />
 			<div class="flex flex-col flex-1">
 				<Header onSearch={handleSearch} onLogout={handleLogout} />
+				<TagFilter />
 				<MainContent />
 			</div>
 		</div>

@@ -56,6 +56,8 @@ export default function MainContent() {
 				if (currentId) {
 					await navigation.fetchHierarchyItem(currentId);
 				}
+				// Refresh tags to reflect synced changes
+				await navigation.fetchAllTags();
 			}
 		} catch {
 			// Silently handle sync errors
@@ -93,6 +95,8 @@ export default function MainContent() {
 			if (currentId) {
 				await navigation.fetchHierarchyItem(currentId);
 			}
+			// Refresh tags to reflect changes
+			await navigation.fetchAllTags();
 		} catch (error) {
 			console.error('Failed to delete note:', error);
 			alert('Failed to delete note. Please try again.');
@@ -182,6 +186,8 @@ export default function MainContent() {
 			if (currentId) {
 				await navigation.fetchHierarchyItem(currentId);
 			}
+			// Refresh tags to reflect changes
+			await navigation.fetchAllTags();
 
 			setIsModalOpen(false);
 			setEditingNote(null);
@@ -329,11 +335,80 @@ export default function MainContent() {
 				</div>
 			</Show>
 
-			{/* Show regular content when not searching */}
+			{/* Show tag filtered results when filtering by tag */}
+			<Show when={navigation.selectedTag() && !navigation.isFilteringByTag() && !navigation.error()}>
+				<div class={styles.contentWrapper}>
+					<div class={styles.searchHeader}>
+						<h1 class={styles.searchTitle}>
+							<i class="fas fa-tag text-gray-600 mr-3" />
+							Notes tagged with "{navigation.selectedTag()}"
+						</h1>
+						<button
+							class={styles.clearButton}
+							onClick={() => navigation.clearTagFilter()}
+						>
+							<i class="fas fa-times mr-2" />
+							Clear Filter
+						</button>
+					</div>
+					<Show
+						when={navigation.tagFilteredNotes().length > 0}
+						fallback={
+							<div class={styles.emptyState}>
+								<div class={styles.emptyIcon}>
+									<i class="fas fa-tag text-6xl text-gray-300" />
+								</div>
+								<p class={styles.emptyText}>
+									No notes found with tag "{navigation.selectedTag()}"
+								</p>
+							</div>
+						}
+					>
+						<div class={styles.searchResults}>
+							<For each={navigation.tagFilteredNotes()}>
+								{(note: Note) => (
+									<div 
+										class={styles.searchResultItem}
+										onClick={() => {
+											navigation.clearTagFilter();
+											navigate(`/item/${note.attachedToId}`);
+										}}
+									>
+										<div class={styles.noteCard}>
+											<div class={styles.noteContent}>
+												{note.content}
+											</div>
+											<div class={styles.noteMeta}>
+												<span class={styles.noteDate}>
+													<i class="fas fa-calendar-alt mr-2" />
+													{formatDate(note.createdAt)}
+												</span>
+												<Show when={note.tags}>
+													<div class={styles.noteTags}>
+														<For each={JSON.parse(note.tags || '[]')}>
+															{(tag: string) => (
+																<span class={styles.noteTag}>
+																	{tag}
+																</span>
+															)}
+														</For>
+													</div>
+												</Show>
+											</div>
+										</div>
+									</div>
+								)}
+							</For>
+						</div>
+					</Show>
+				</div>
+			</Show>
+
+			{/* Show regular content when not searching or filtering */}
 			<Show
-				when={!navigation.searchQuery() && !navigation.selectedItemLoading() && !navigation.error() && navigation.selectedItem()}
+				when={!navigation.searchQuery() && !navigation.selectedTag() && !navigation.selectedItemLoading() && !navigation.error() && navigation.selectedItem()}
 				fallback={
-					<Show when={!navigation.searchQuery() && !navigation.selectedItemLoading() && !navigation.error()}>
+					<Show when={!navigation.searchQuery() && !navigation.selectedTag() && !navigation.selectedItemLoading() && !navigation.error()}>
 						<div class={styles.emptyState}>
 							<div class={styles.emptyIcon}>
 								<i class="fas fa-mouse-pointer text-6xl text-gray-300" />

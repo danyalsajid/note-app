@@ -7,6 +7,8 @@ import {
 	deleteNote,
 	searchNotes,
 	summarizeContent,
+	getAllTags,
+	getNotesByTag,
 } from '../controllers/notes.controller.js';
 import { requireAuth } from '../middleware/auth.middleware.js';
 
@@ -14,6 +16,12 @@ const router = express.Router();
 
 // GET /api/notes/search - Search notes (must be before /:id route)
 router.get('/notes/search', requireAuth, searchNotes);
+
+// GET /api/notes/tags - Get all unique tags (must be before /:id route)
+router.get('/notes/tags', requireAuth, getAllTags);
+
+// GET /api/notes/by-tag/:tag - Get notes by tag (must be before /:id route)
+router.get('/notes/by-tag/:tag', requireAuth, getNotesByTag);
 
 // POST /api/notes/summarize - Summarize note content (must be before /:id route)
 router.post('/notes/summarize', requireAuth, summarizeContent);
