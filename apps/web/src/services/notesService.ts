@@ -2,8 +2,6 @@ import type { Note } from '../types';
 import { getAuthHeaders, getAuthHeadersForFormData } from '../utils/authHeaders';
 import { API_BASE_URL } from '../config/api';
 
-const API_URL = `${API_BASE_URL}/api`;
-
 export interface CreateNoteBody {
 	content: string;
 	attachedToId: string;
@@ -25,7 +23,7 @@ export const notesService = {
 	 * Create a new note
 	 */
 	async createNote(data: CreateNoteBody): Promise<Note> {
-		const response = await fetch(`${API_URL}/notes`, {
+		const response = await fetch(`${API_BASE_URL}/api/notes`, {
 			method: 'POST',
 			headers: getAuthHeaders(),
 			body: JSON.stringify(data),
@@ -41,7 +39,7 @@ export const notesService = {
 	 * Update a note
 	 */
 	async updateNote(id: string, data: UpdateNoteBody): Promise<Note> {
-		const response = await fetch(`${API_URL}/notes/${id}`, {
+		const response = await fetch(`${API_BASE_URL}/api/notes/${id}`, {
 			method: 'PUT',
 			headers: getAuthHeaders(),
 			body: JSON.stringify(data),
@@ -57,7 +55,7 @@ export const notesService = {
 	 * Delete a note
 	 */
 	async deleteNote(id: string): Promise<{ message: string }> {
-		const response = await fetch(`${API_URL}/notes/${id}`, {
+		const response = await fetch(`${API_BASE_URL}/api/notes/${id}`, {
 			method: 'DELETE',
 			headers: getAuthHeaders(),
 		});
@@ -76,7 +74,7 @@ export const notesService = {
 			return [];
 		}
 		const response = await fetch(
-			`${API_BASE_URL}/notes/search?q=${encodeURIComponent(query)}`,
+			`${API_BASE_URL}/api/notes/search?q=${encodeURIComponent(query)}`,
 			{
 				headers: getAuthHeaders(),
 			}
@@ -95,7 +93,7 @@ export const notesService = {
 		const formData = new FormData();
 		formData.append('voiceNote', audioBlob, 'voice-note.webm');
 
-		const response = await fetch(`${API_URL}/voice-notes/upload`, {
+		const response = await fetch(`${API_BASE_URL}/api/voice-notes/upload`, {
 			method: 'POST',
 			headers: getAuthHeadersForFormData(),
 			body: formData,
@@ -113,7 +111,7 @@ export const notesService = {
 	 * Delete a voice note file
 	 */
 	async deleteVoiceNote(filename: string): Promise<void> {
-		const response = await fetch(`${API_URL}/voice-notes/${filename}`, {
+		const response = await fetch(`${API_BASE_URL}/api/voice-notes/${filename}`, {
 			method: 'DELETE',
 			headers: getAuthHeaders(),
 		});
@@ -128,14 +126,14 @@ export const notesService = {
 	 * Get voice note URL
 	 */
 	getVoiceNoteUrl(filename: string): string {
-		return `${API_URL}/voice-notes/${filename}`;
+		return `${API_BASE_URL}/api/voice-notes/${filename}`;
 	},
 
 	/**
 	 * Fetch voice note as blob with authentication
 	 */
 	async fetchVoiceNoteBlob(filename: string): Promise<string> {
-		const response = await fetch(`${API_URL}/voice-notes/${filename}`, {
+		const response = await fetch(`${API_BASE_URL}/api/voice-notes/${filename}`, {
 			method: 'GET',
 			headers: getAuthHeaders(),
 		});
@@ -152,7 +150,7 @@ export const notesService = {
 	 * Get all unique tags from notes
 	 */
 	async getAllTags(): Promise<string[]> {
-		const response = await fetch(`${API_URL}/notes/tags`, {
+		const response = await fetch(`${API_BASE_URL}/api/notes/tags`, {
 			headers: getAuthHeaders(),
 		});
 		if (!response.ok) {
@@ -170,7 +168,7 @@ export const notesService = {
 			return [];
 		}
 		const response = await fetch(
-			`${API_URL}/notes/by-tag/${encodeURIComponent(tag)}`,
+			`${API_BASE_URL}/api/notes/by-tag/${encodeURIComponent(tag)}`,
 			{
 				headers: getAuthHeaders(),
 			}

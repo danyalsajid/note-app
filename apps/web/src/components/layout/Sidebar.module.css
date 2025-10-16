@@ -2,6 +2,21 @@
 
 .container {
 	@apply w-[432px] h-screen bg-white border-r border-gray-200 overflow-y-auto;
+	@apply transition-transform duration-300 ease-in-out;
+	@apply fixed lg:relative z-40;
+	@apply -translate-x-full lg:translate-x-0;
+}
+
+.container.open {
+	@apply translate-x-0;
+}
+
+.overlay {
+	@apply fixed inset-0 bg-black opacity-50 z-30 lg:hidden;
+}
+
+.closeButton {
+	@apply lg:hidden p-2 text-gray-600 hover:bg-gray-100 rounded transition;
 }
 
 .padding {

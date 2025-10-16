@@ -5,6 +5,7 @@ import styles from './Header.module.css';
 interface HeaderProps {
 	onSearch: (query: string) => void;
 	onLogout: () => void;
+	onMenuToggle?: () => void;
 }
 
 export default function Header(props: HeaderProps) {
@@ -44,6 +45,15 @@ export default function Header(props: HeaderProps) {
 
 	return (
 		<header class={styles.header}>
+			{/* Mobile Menu Toggle */}
+			<button
+				onClick={() => props.onMenuToggle?.()}
+				class={styles.menuToggle}
+				title="Toggle Menu"
+			>
+				<i class="fas fa-bars" />
+			</button>
+
 			{/* Search Bar */}
 			<form onSubmit={handleSearchSubmit} class={styles.searchForm}>
 				<div class={styles.searchContainer}>

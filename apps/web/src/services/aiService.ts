@@ -1,8 +1,6 @@
 import { API_BASE_URL } from '../config/api';
 import { getAuthHeaders } from '../utils/authHeaders';
 
-const API_URL = `${API_BASE_URL}/api`;
-
 class AIService {
 	/**
 	 * Summarize note content
@@ -12,7 +10,7 @@ class AIService {
 			throw new Error('Content must be at least 50 characters long to summarize.');
 		}
 		try {
-			const response = await fetch(`${API_URL}/notes/summarize`, {
+			const response = await fetch(`${API_BASE_URL}/api/notes/summarize`, {
 				method: 'POST',
 				headers: getAuthHeaders(),
 				body: JSON.stringify({ content }),

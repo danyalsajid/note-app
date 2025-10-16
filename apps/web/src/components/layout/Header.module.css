@@ -20,6 +20,10 @@
 	@apply w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
 }
 
+.menuToggle {
+	@apply lg:hidden p-2 text-gray-600 hover:bg-gray-100 rounded transition mr-2;
+}
+
 .logoutButton {
 	@apply px-4 py-2 border border-gray-400 text-gray-600 text-sm font-medium rounded hover:bg-gray-50 hover:border-gray-500 transition flex items-center gap-2 ml-4;
 }

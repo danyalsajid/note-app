@@ -5,7 +5,12 @@ import AddItemModal from '../ui/AddItemModal';
 import { useNavigation } from '../../contexts';
 import styles from './Sidebar.module.css';
 
-export default function Sidebar() {
+interface SidebarProps {
+	isOpen?: boolean;
+	onClose?: () => void;
+}
+
+export default function Sidebar(props: SidebarProps) {
 	const navigate = useNavigate();
 	const params = useParams();
 	const navigation = useNavigation();
@@ -145,10 +150,27 @@ export default function Sidebar() {
 
 		return (
 		<>
-			<div class={styles.container}>
+			{/* Mobile Overlay */}
+			<Show when={props.isOpen}>
+				<div 
+					class={styles.overlay}
+					onClick={() => props.onClose?.()}
+				/>
+			</Show>
+
+			<div class={`${styles.container} ${props.isOpen ? styles.open : ''}`}>
 				<div class={styles.padding}>
 					{/* Header */}
 					<div class={styles.header}>
+						{/* Mobile Close Button */}
+						<button
+							onClick={() => props.onClose?.()}
+							class={styles.closeButton}
+							title="Close Menu"
+						>
+							<i class="fas fa-times" />
+						</button>
+						
 						<div class={styles.headerContent}>
 							<h3 class={styles.title}>
 								Organizations
