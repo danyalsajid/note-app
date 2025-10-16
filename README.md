@@ -1,96 +1,146 @@
+# Note App
+
+A modern, full-stack note-taking application with hierarchical organization, voice notes, and AI-powered features.
+
+## Features
+
+### Hierarchical Organization
+- **Multi-level structure**: Organize notes under Organizations → Teams → Clients → Episodes
+
+### Rich Note Attachments
+- **Text content**: Add notes at any level of Hierarchicy
+- **Custom tags**: Organize notes with custom tagging system
+- **Search functionality**: Search across all notes and hierarchies
+- **Offline notes**: Add notes when offline and sync when online
+- **Voice notes**: Record voice notes directly in the browser
+- **AI assistant**: AI summary of notes
+
+## Architecture
+
+
+### Modern Tech Stack
+- **Frontend**: SolidJS + TypeScript + Tailwind CSS + Vite
+- **Backend**: Node.js + Express + TypeScript
+- **Database**: SQLite with Drizzle ORM
+- **Deployment**: Railway-ready configuration
+
+### Project Structure
+
+```
+note-app/
+├── apps/
+│   ├── web/                 # Frontend application
+│   │   ├── src/
+│   │   │   ├── components/  # UI components
+│   │   │   │   ├── layout/  # Header, Sidebar components
+│   │   │   │   ├── notes/   # Note editor and display
+│   │   │   │   ├── tree/    # Hierarchy tree navigation
+│   │   │   │   └── ui/      # Reusable UI components
+│   │   │   ├── contexts/    # State management
+│   │   │   ├── hooks/       # Custom SolidJS hooks
+│   │   │   ├── pages/       # Route components
+│   │   │   ├── services/    # API integration services
+│   │   │   ├── types/       # TypeScript type definitions
+│   │   │   └── utils/       # Utility functions
+│   │   └── package.json     # Frontend dependencies
+│   │
+│   └── server/              # Backend API server
+│       ├── src/
+│       │   ├── api/         # API routes and controllers
+│       │   │   ├── controllers/  # Request handlers
+│       │   │   ├── middleware/   # Auth and validation
+│       │   │   └── routes/       # Route definitions
+│       │   ├── db/          # Database configuration
+│       │   │   ├── schema.ts     # Database schema
+│       │   │   ├── database.ts  # DB connection
+│       │   │   └── seed.ts       # Sample data
+│       │   ├── services/    # Business logic
+│       │   ├── types/       # TypeScript definitions
+│       │   └── utils/       # Helper functions
+│       ├── drizzle/         # Database migrations
+│       └── package.json     # Backend dependencies
+├── package.json            # Root monorepo configuration
+└── README.md              # This file
+```
+
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js (version 14 or higher)
+- Node.js (version 19 or higher)
 - npm (version 6 or higher)
 
 ### Installation
 
-1. Clone the repository:
+1. **Clone the repository**:
+   ```bash
+   git clone <repository-url>
+   cd note-app
+   ```
 
-    ```bash
-    git clone <repository-url>
-    cd note-app
-    ```
-
-2. Install dependencies for the entire project:
-
-    ```bash
-    npm install
-    ```
-
-    This will install dependencies for the root project and all workspaces (`apps/server` and `apps/web`).
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+   This installs dependencies for the root project and all workspaces (`apps/server` and `apps/web`).
 
 ### Development
 
-To start the development servers for both the backend and frontend:
-
+Start both frontend and backend servers concurrently:
 ```bash
 npm run dev
 ```
 
-This will start both the backend server and frontend web app concurrently for local development.
+## API Endpoints
 
-**Note for Deployment**: On platforms like Railway, only the server is deployed as a single service, serving both API and static frontend files.
+### Authentication
+- `POST /api/auth/register` - User registration
+- `POST /api/auth/login` - User login
+- `POST /api/auth/logout` - User logout
+- `GET /api/auth/me` - Get current user info
 
-### Production
+### Notes
+- `GET /api/notes` - Get all notes for user
+- `POST /api/notes` - Create new note
+- `PUT /api/notes/:id` - Update note
+- `DELETE /api/notes/:id` - Delete note
+- `GET /api/notes/search?q=query` - Search notes
 
-To build and start the applications:
+### Hierarchy
+- `GET /api/hierarchy` - Get hierarchy tree
+- `POST /api/hierarchy` - Create hierarchy node
+- `PUT /api/hierarchy/:id` - Update hierarchy node
+- `DELETE /api/hierarchy/:id` - Delete hierarchy node
 
-```bash
-npm run build
-npm run start
-```
+### Voice Notes
+- `POST /api/voice-notes/upload` - Upload voice note
+- `GET /api/voice-notes/:filename` - Get voice note file
 
-### Additional Scripts
 
-- `npm run install:all` - Explicitly install dependencies for root, server, and web (alternative to `npm install`)
-- `npm run clean` - Clean build artifacts from both applications
-
-## Project Structure
-
-- `apps/web/` - Frontend web application
-- `apps/server/` - Backend server
-
-# Deployment Guide for Railway
-
-## Production Setup
-
-This server is configured to work with Railway's deployment platform.
+## Configuration
 
 ### Environment Variables
 
-Set these in your Railway project settings:
-
+#### Backend (.env)
 ```env
+PORT=3001
 DATABASE_URL=./data/database.db
-NODE_ENV=production
-PORT=3001  # Railway will override this automatically
+NODE_ENV=development
+JWT_SECRET=your-jwt-secret-key
 ```
 
-### Database
 
-- **Development**: Uses `./data/database.db` (local file)
-- **Production**: Railway will create a fresh database on first deployment
-- **Migrations**: Run automatically when deploying (if new migrations exist)
+## Additional Scripts
 
-### Deployment Steps
-
-1. **Connect Repository**: Link your GitHub repository to Railway
-2. **Set Environment Variables**: Add the variables above in Railway dashboard
-3. **Deploy**: Railway will automatically build and deploy your app
-4. **Database Setup**: The first deployment will create a fresh database
+### Development Scripts
+- `npm run install:all` - Install dependencies for all workspaces
+- `npm run clean` - Clean build artifacts
+- `npm run lint` - Run ESLint on all projects
+- `npm run lint:fix` - Fix ESLint issues automatically
+- `npm run format` - Format code with Prettier
+- `npm run format:check` - Check code formatting
 
 ### Database Scripts
-
-```bash
-# Generate new migrations (run locally)
-npm run db:generate
-
-# Apply migrations (run locally or in production)
-npm run db:migrate
-
-# Reset database (development only)
-npm run db:reset
-```
+- `npm run db:generate` - Generate database migrations
+- `npm run db:migrate` - Apply database migrations
+- `npm run db:reset` - Reset development database
