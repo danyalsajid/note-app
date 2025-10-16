@@ -1,4 +1,5 @@
 import { API_BASE_URL } from '../config/api';
+import { getAuthHeaders } from '../utils/authHeaders';
 
 const API_URL = `${API_BASE_URL}/api`;
 
@@ -13,9 +14,7 @@ class AIService {
 		try {
 			const response = await fetch(`${API_URL}/notes/summarize`, {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
+				headers: getAuthHeaders(),
 				body: JSON.stringify({ content }),
 			});
 
