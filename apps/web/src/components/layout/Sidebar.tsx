@@ -168,7 +168,7 @@ export default function Sidebar(props: SidebarProps) {
 							class={styles.closeButton}
 							title="Close Menu"
 						>
-							<i class="fas fa-times" />
+							<i class="far fa-times" />
 						</button>
 						
 						<div class={styles.headerContent}>

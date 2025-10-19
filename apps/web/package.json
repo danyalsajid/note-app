@@ -26,6 +26,7 @@
 	},
 	"dependencies": {
 		"@fortawesome/fontawesome-svg-core": "^7.1.0",
+		"@fortawesome/free-regular-svg-icons": "^7.1.0",
 		"@fortawesome/free-solid-svg-icons": "^7.1.0",
 		"@solidjs/router": "^0.15.3",
 		"solid-fa": "^0.2.0",

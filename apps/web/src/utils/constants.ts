@@ -5,28 +5,28 @@
 // Node configuration for hierarchy tree
 export const NODE_CONFIG = {
 	organisation: {
-		icon: 'fas fa-building',
+		icon: 'far fa-hospital',
 		color: '#ef4444',
 		fontSize: '1.25rem',
 		childType: 'team',
 		childrenKey: 'teams',
 	},
 	team: {
-		icon: 'fas fa-users',
+		icon: 'fa fa-user-friends',
 		color: '#3b82f6',
 		fontSize: '1.25rem',
 		childType: 'client',
 		childrenKey: 'clients',
 	},
 	client: {
-		icon: 'fas fa-user',
+		icon: 'far fa-user',
 		color: '#2563eb',
 		fontSize: '1.25rem',
 		childType: 'episode',
 		childrenKey: 'episodes',
 	},
 	episode: {
-		icon: 'fas fa-file-alt',
+		icon: 'far fa-file-alt',
 		color: '#ca8a04',
 		fontSize: '1.15rem',
 		childType: null,

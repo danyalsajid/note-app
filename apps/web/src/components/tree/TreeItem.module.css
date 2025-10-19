@@ -5,7 +5,7 @@
 }
 
 .item {
-	@apply flex items-center justify-between py-3 pr-2 rounded cursor-pointer transition-colors;
+	@apply flex items-center justify-between py-3 pr-2 rounded cursor-pointer transition-colors relative;
 }
 
 .itemSelected {
@@ -17,7 +17,28 @@
 }
 
 .itemContent {
-	@apply flex items-center gap-3;
+	@apply flex items-center gap-4 flex-1;
+}
+
+.itemActions {
+	@apply flex items-center gap-1;
+}
+
+/* Icon containers with different styles based on type */
+.orgIcon {
+	@apply w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center p-2;
+}
+
+.teamIcon {
+	@apply w-9 h-9 bg-blue-100 rounded-md flex items-center justify-center p-1.5;
+}
+
+.clientIcon {
+	@apply w-9 h-9 bg-indigo-100 rounded-full flex items-center justify-center p-1.5;
+}
+
+.episodeIcon {
+	@apply w-9 h-9 bg-yellow-100 rounded-md flex items-center justify-center p-1.5;
 }
 
 .itemText {
@@ -29,5 +50,18 @@
 }
 
 .addButton {
-	@apply w-8 h-8 flex items-center justify-center border border-gray-300 rounded text-gray-600 hover:bg-gray-100 transition opacity-100 cursor-pointer;
+	@apply w-10 h-10 flex items-center justify-center border border-gray-300 rounded text-gray-600 hover:bg-gray-100 transition opacity-100 cursor-pointer;
+}
+
+.chevronButton {
+	@apply w-6 h-6 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors cursor-pointer;
+}
+
+.childrenContainer {
+	@apply relative;
+}
+
+.orgChildrenContainer {
+	@apply relative;
+	@apply before:absolute before:left-0 before:top-0 before:bottom-0 before:w-px before:bg-gray-200;
 }

@@ -1,11 +1,12 @@
 @reference 'tailwindcss';
 
 .container {
-	@apply w-[432px] h-screen bg-gradient-to-b from-slate-50 to-white border-r border-gray-200/60 overflow-y-auto;
+	@apply w-[432px] h-screen bg-white border-r border-gray-200/60 overflow-y-auto;
 	@apply transition-transform duration-300 ease-in-out;
 	@apply fixed lg:relative z-40;
 	@apply -translate-x-full lg:translate-x-0;
 	@apply shadow-xl lg:shadow-none;
+	box-shadow: 4px 0 6px -1px rgba(0, 0, 0, 0.1), 2px 0 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .container.open {
@@ -17,7 +18,7 @@
 }
 
 .closeButton {
-	@apply lg:hidden p-3 text-gray-500 hover:bg-gray-100 hover:text-gray-700 rounded-xl transition-all duration-200;
+	@apply lg:hidden p-4 text-gray-500 hover:bg-gray-100 hover:text-gray-700 rounded-xl transition-all duration-200;
 	@apply absolute top-4 right-4 z-50;
 }
 
@@ -34,11 +35,11 @@
 }
 
 .title {
-	@apply text-2xl font-bold text-gray-800;
+	@apply text-2xl font-bold bg-gradient-to-r from-blue-500 to-indigo-500 bg-clip-text text-transparent;
 }
 
 .addButton {
-	@apply px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white text-sm font-semibold rounded-lg hover:from-blue-600 hover:to-indigo-600 transition-all duration-200 flex items-center gap-2 shadow-sm hover:shadow-md cursor-pointer;
+	@apply px-5 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 text-white text-sm font-semibold rounded-lg hover:from-blue-600 hover:to-indigo-600 transition-all duration-200 flex items-center gap-3 shadow-sm hover:shadow-md cursor-pointer;
 }
 
 .addButtonIcon {

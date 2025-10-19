@@ -1,4 +1,4 @@
-import { For, Show } from 'solid-js';
+import { For, Show, createSignal } from 'solid-js';
 import type { Organisation, Team, Client, Episode } from '../../types';
 import { NODE_CONFIG } from '../../utils';
 import styles from './TreeItem.module.css';
@@ -15,6 +15,7 @@ interface TreeItemProps {
 
 export default function TreeItem(props: TreeItemProps) {
 	const config = () => NODE_CONFIG[props.type];
+	const [isExpanded, setIsExpanded] = createSignal(true);
 	const paddingLeft = () => props.level * 1.5; // 1.5rem per level for proper indentation
 	const hasChildren = () => {
 		const cfg = config();
@@ -33,6 +34,25 @@ export default function TreeItem(props: TreeItemProps) {
 
 	const isSelected = () => props.selectedItemId === props.item.id;
 
+	const getIconContainerClasses = () => {
+		const baseClasses = props.type === 'organisation' ? 'w-10 h-10' : 'w-9 h-9';
+		if (props.type === 'organisation') {
+			return `${baseClasses} ${styles.orgIcon}`;
+		} else if (props.type === 'team') {
+			return `${baseClasses} ${styles.teamIcon}`;
+		} else if (props.type === 'client') {
+			return `${baseClasses} ${styles.clientIcon}`;
+		} else if (props.type === 'episode') {
+			return `${baseClasses} ${styles.episodeIcon}`;
+		}
+		return baseClasses;
+	};
+
+	const toggleExpanded = (e: Event) => {
+		e.stopPropagation();
+		setIsExpanded(!isExpanded());
+	};
+
 	return (
 		<div class={styles.wrapper}>
 			<div
@@ -41,37 +61,50 @@ export default function TreeItem(props: TreeItemProps) {
 				onClick={() => props.onNavigate(`/item/${props.item.id}`)}
 			>
 				<div class={styles.itemContent}>
-					<i
-						class={config().icon}
-						style={{
-							'font-size': config().fontSize,
-							color: config().color,
-						}}
-					/>
+					<div class={getIconContainerClasses()}>
+						<i
+							class={config().icon}
+							style={{
+								'font-size': config().fontSize,
+								color: config().color,
+							}}
+						/>
+					</div>
 					<span
-						class={isSelected() ? styles.itemTextSelected : styles.itemText}
+						class={`${isSelected() ? styles.itemTextSelected : styles.itemText} ${props.type === 'organisation' ? 'font-medium' : ''}`}
 					>
 						{props.item.name}
 					</span>
 				</div>
-				<Show when={canAddChild()}>
-					<button
-						onClick={e => {
-							e.stopPropagation();
-							props.onAddChild(
-								props.item.id,
-								config().childType!
-							);
-						}}
-						class={styles.addButton}
-						title={`Add ${config().childType}`}
-					>
-						+
-					</button>
-				</Show>
+				<div class={styles.itemActions}>
+					<Show when={hasChildren()}>
+						<button
+							onClick={toggleExpanded}
+							class={styles.chevronButton}
+							title={isExpanded() ? 'Collapse' : 'Expand'}
+						>
+							<i class={`fa ${isExpanded() ? 'fa-chevron-down' : 'fa-chevron-right'}`} />
+						</button>
+					</Show>
+					<Show when={canAddChild()}>
+						<button
+							onClick={e => {
+								e.stopPropagation();
+								props.onAddChild(
+									props.item.id,
+									config().childType!
+								);
+							}}
+							class={styles.addButton}
+							title={`Add ${config().childType}`}
+						>
+							+
+						</button>
+					</Show>
+				</div>
 			</div>
-			<Show when={hasChildren()}>
-				<div>
+			<Show when={hasChildren() && isExpanded()}>
+				<div class={`${styles.childrenContainer} ${props.level === 0 ? styles.orgChildrenContainer : ''}`}>
 					<For each={children()}>
 						{child => (
 							<TreeItem
