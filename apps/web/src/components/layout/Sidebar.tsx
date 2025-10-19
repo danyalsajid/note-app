@@ -70,6 +70,71 @@ export default function Sidebar(props: SidebarProps) {
 		openModal(childType, parentId);
 	};
 
+	// Helper function to recursively find hierarchy items that contain specific notes
+	const findHierarchyItemsWithNotes = (items: any[], noteIds: Set<string>): any[] => {
+		const result: any[] = [];
+
+		for (const item of items) {
+			let itemHasMatchingNotes = false;
+
+			// Check if this item has notes that match our filter
+			// Check if the item ID matches any note's attachedToId
+			if (noteIds.has(item.id)) {
+				itemHasMatchingNotes = true;
+			}
+
+			// Check children recursively
+			const childrenWithNotes = findHierarchyItemsWithNotes(
+				item.teams || item.clients || item.episodes || [],
+				noteIds
+			);
+
+			if (itemHasMatchingNotes || childrenWithNotes.length > 0) {
+				// Create a copy of the item with only the relevant children
+				const filteredItem = { ...item };
+
+				if (item.teams && childrenWithNotes.some(child => child.type === 'team')) {
+					filteredItem.teams = childrenWithNotes.filter(child => child.type === 'team');
+				}
+				if (item.clients && childrenWithNotes.some(child => child.type === 'client')) {
+					filteredItem.clients = childrenWithNotes.filter(child => child.type === 'client');
+				}
+				if (item.episodes && childrenWithNotes.some(child => child.type === 'episode')) {
+					filteredItem.episodes = childrenWithNotes.filter(child => child.type === 'episode');
+				}
+
+				result.push(filteredItem);
+			}
+		}
+
+		return result;
+	};
+
+	// Get the items to display in the sidebar
+	const getSidebarItems = () => {
+		// If searching or filtering by tag, show filtered hierarchy
+		if (navigation.searchQuery() || navigation.selectedTag()) {
+			const noteIds = new Set<string>();
+
+			// Collect note IDs from search results or tag-filtered notes
+			if (navigation.searchQuery()) {
+				navigation.searchResults().forEach(note => {
+					noteIds.add(note.attachedToId);
+				});
+			} else if (navigation.selectedTag()) {
+				navigation.tagFilteredNotes().forEach(note => {
+					noteIds.add(note.attachedToId);
+				});
+			}
+
+			// Filter hierarchy to only show items that have matching notes
+			return findHierarchyItemsWithNotes(navigation.organisations(), noteIds);
+		}
+
+		// Otherwise, show full hierarchy
+		return navigation.organisations();
+	};
+
 	const getItemNameById = (id: string): string | null => {
 		if (!id) return null;
 
@@ -148,11 +213,11 @@ export default function Sidebar(props: SidebarProps) {
 		return null;
 	};
 
-		return (
+	return (
 		<>
 			{/* Mobile Overlay */}
 			<Show when={props.isOpen}>
-				<div 
+				<div
 					class={styles.overlay}
 					onClick={() => props.onClose?.()}
 				/>
@@ -200,18 +265,33 @@ export default function Sidebar(props: SidebarProps) {
 
 					<Show when={!navigation.loading() && !navigation.error()}>
 						<div class={styles.content}>
-							<For each={navigation.organisations()}>
-								{org => (
-									<TreeItem
-										item={org}
-										type="organisation"
-										level={0}
-										onAddChild={handleAddChild}
-										selectedItemId={params.id || null}
-										onNavigate={navigate}
-									/>
-								)}
-							</For>
+							<Show
+								when={getSidebarItems().length > 0}
+								fallback={
+									<div class={styles.emptyState}>
+										<i class="fas fa-search text-4xl text-gray-300 mb-2" />
+										<p class={styles.emptyText}>
+											{navigation.searchQuery() ?
+												`No items found matching "${navigation.searchQuery()}"` :
+												`No items found with tag "${navigation.selectedTag()}"`
+											}
+										</p>
+									</div>
+								}
+							>
+								<For each={getSidebarItems()}>
+									{org => (
+										<TreeItem
+											item={org}
+											type="organisation"
+											level={0}
+											onAddChild={handleAddChild}
+											selectedItemId={params.id || null}
+											onNavigate={navigate}
+										/>
+									)}
+								</For>
+							</Show>
 						</div>
 					</Show>
 				</div>

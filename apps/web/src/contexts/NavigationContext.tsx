@@ -97,6 +97,7 @@ export const NavigationProvider: ParentComponent = (props) => {
 		} catch (err) {
 			setError(err instanceof Error ? err.message : 'Failed to load item');
 			setSelectedItem(null);
+			// Don't throw here - let the UI handle the error state gracefully
 		} finally {
 			setSelectedItemLoading(false);
 		}
