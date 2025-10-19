@@ -410,16 +410,54 @@ export default function MainContent() {
 				fallback={
 					<Show when={!navigation.searchQuery() && !navigation.selectedTag() && !navigation.selectedItemLoading() && !navigation.error()}>
 						<div class={styles.emptyState}>
-							<div class={styles.emptyIcon}>
-								<i class="fas fa-mouse-pointer text-6xl text-gray-300" />
+							<div class={styles.emptyIconContainer}>
+								<div class={styles.emptyIcon}>
+									<i class="fas fa-lightbulb text-6xl text-blue-400" />
+								</div>
+								<div class={styles.emptyGlow}></div>
 							</div>
-							<h1 class={styles.emptyTitle}>
-								Note App
-							</h1>
-							<p class={styles.emptyText}>
-								Select an item from the hierarchy to view its
-								details and notes.
-							</p>
+							<div class={styles.emptyContent}>
+								<h1 class={styles.emptyTitle}>
+									Welcome to NoteApp
+								</h1>
+								<p class={styles.emptySubtitle}>
+									Your personal knowledge hub for organizing thoughts, ideas, and insights
+								</p>
+								<div class={styles.emptyActions}>
+									<div class={styles.emptySteps}>
+										<div class={styles.emptyStep}>
+											<div class={styles.stepNumber}>1</div>
+											<div class={styles.stepContent}>
+												<h3 class={styles.stepTitle}>Create Organizations</h3>
+												<p class={styles.stepDescription}>Start by creating organizations to structure your notes</p>
+											</div>
+										</div>
+										<div class={styles.emptyStep}>
+											<div class={styles.stepNumber}>2</div>
+											<div class={styles.stepContent}>
+												<h3 class={styles.stepTitle}>Add Teams & Projects</h3>
+												<p class={styles.stepDescription}>Build your hierarchy with teams, clients, and episodes</p>
+											</div>
+										</div>
+										<div class={styles.emptyStep}>
+											<div class={styles.stepNumber}>3</div>
+											<div class={styles.stepContent}>
+												<h3 class={styles.stepTitle}>Capture Ideas</h3>
+												<p class={styles.stepDescription}>Add notes, tag them, and never lose a thought</p>
+											</div>
+										</div>
+									</div>
+									<div class={styles.emptyTips}>
+										<h3 class={styles.tipsTitle}>💡 Pro Tips</h3>
+										<ul class={styles.tipsList}>
+											<li class={styles.tipItem}>Use tags to categorize and find notes quickly</li>
+											<li class={styles.tipItem}>Search across all your notes with the search bar</li>
+											<li class={styles.tipItem}>Organize notes by project or context for better workflow</li>
+											<li class={styles.tipItem}>Add rich text and formatting to make notes more readable</li>
+										</ul>
+									</div>
+								</div>
+							</div>
 						</div>
 					</Show>
 				}

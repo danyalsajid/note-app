@@ -1,29 +1,79 @@
 @reference 'tailwindcss';
 
 .header {
-	@apply bg-white border-b border-gray-200 flex items-center justify-between px-6 shadow-sm h-16;
+	@apply bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-800 border-b border-blue-700/30 flex items-center justify-between px-6 shadow-lg h-16 backdrop-blur-sm;
 }
 
 .searchForm {
-	@apply flex-1 max-w-2xl;
+	@apply flex-1 max-w-2xl mx-6;
 }
 
 .searchContainer {
-	@apply relative;
+	@apply relative flex items-center bg-white/95 backdrop-blur-sm rounded-xl shadow-sm border border-white/20 transition-all duration-300 ease-in-out;
+}
+
+.searchContainerFocused {
+	@apply ring-2 ring-blue-400/50 border-blue-400 shadow-lg;
 }
 
 .searchIcon {
-	@apply absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none;
+	@apply absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none;
 }
 
 .searchInput {
-	@apply w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+	@apply w-full pl-12 pr-4 py-3 text-gray-700 placeholder-gray-500 bg-transparent border-0 rounded-xl focus:outline-none focus:ring-0 text-sm font-medium;
 }
 
 .menuToggle {
-	@apply lg:hidden p-2 text-gray-600 hover:bg-gray-100 rounded transition mr-2;
+	@apply lg:hidden p-2 text-white/90 hover:bg-white/10 rounded-lg transition-all duration-200 mr-2;
+}
+
+.brand {
+	@apply flex items-center gap-3;
+}
+
+.brandIcon {
+	@apply flex items-center justify-center w-8 h-8 bg-white/20 rounded-lg;
+	@apply text-white text-lg;
+}
+
+.menuToggle {
+	@apply lg:hidden p-3 text-white/90 hover:bg-white/10 rounded-lg transition-all duration-200 mr-2;
+	@apply active:scale-95 touch-manipulation;
+	@apply min-h-[44px] min-w-[44px] flex items-center justify-center;
+}
+
+.brandTitle {
+	@apply text-white font-bold text-lg tracking-wide hidden sm:block;
+}
+
+.rightSection {
+	@apply flex items-center gap-2 sm:gap-4;
+}
+
+.userProfile {
+	@apply flex items-center gap-2 sm:gap-3 px-2 sm:px-3 py-2 bg-white/10 rounded-lg backdrop-blur-sm;
+}
+
+.userAvatar {
+	@apply flex items-center justify-center w-8 h-8 bg-white/20 rounded-full;
+	@apply text-white text-sm min-w-[32px] min-h-[32px];
+}
+
+.userInfo {
+	@apply hidden md:block;
+}
+
+.userName {
+	@apply text-white text-sm font-medium hidden sm:block;
 }
 
 .logoutButton {
-	@apply px-4 py-2 border border-gray-400 text-gray-600 text-sm font-medium rounded hover:bg-gray-50 hover:border-gray-500 transition flex items-center gap-2 ml-4;
+	@apply px-3 sm:px-4 py-2 bg-white/10 text-white text-sm font-medium rounded-lg hover:bg-white/20 transition-all duration-200 flex items-center gap-2 backdrop-blur-sm border border-white/20;
+	@apply active:scale-95 touch-manipulation;
+	@apply min-h-[44px] min-w-[44px] sm:min-w-auto;
+}
+
+.logoutText {
+	@apply hidden sm:inline;
 }

@@ -30,16 +30,18 @@ const HomePage: Component = () => {
 	};
 
 	return (
-		<div class="flex h-screen">
+		<div class="flex h-screen overflow-hidden">
 			<Sidebar isOpen={isSidebarOpen()} onClose={closeSidebar} />
-			<div class="flex flex-col flex-1">
-				<Header 
-					onSearch={handleSearch} 
+			<div class="flex flex-col flex-1 min-w-0">
+				<Header
+					onSearch={handleSearch}
 					onLogout={handleLogout}
 					onMenuToggle={toggleSidebar}
 				/>
 				<TagFilter />
-				<MainContent />
+				<div class="flex-1 overflow-auto">
+					<MainContent />
+				</div>
 			</div>
 		</div>
 	);

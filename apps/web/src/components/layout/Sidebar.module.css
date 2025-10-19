@@ -1,10 +1,11 @@
 @reference 'tailwindcss';
 
 .container {
-	@apply w-[432px] h-screen bg-white border-r border-gray-200 overflow-y-auto;
+	@apply w-[432px] h-screen bg-gradient-to-b from-slate-50 to-white border-r border-gray-200/60 overflow-y-auto;
 	@apply transition-transform duration-300 ease-in-out;
 	@apply fixed lg:relative z-40;
 	@apply -translate-x-full lg:translate-x-0;
+	@apply shadow-xl lg:shadow-none;
 }
 
 .container.open {
@@ -12,45 +13,50 @@
 }
 
 .overlay {
-	@apply fixed inset-0 bg-black opacity-50 z-30 lg:hidden;
+	@apply fixed inset-0 bg-black/20 backdrop-blur-sm z-30 lg:hidden;
 }
 
 .closeButton {
-	@apply lg:hidden p-2 text-gray-600 hover:bg-gray-100 rounded transition;
+	@apply lg:hidden p-3 text-gray-500 hover:bg-gray-100 hover:text-gray-700 rounded-xl transition-all duration-200;
+	@apply absolute top-4 right-4 z-50;
 }
 
 .padding {
-	@apply p-4;
+	@apply p-6;
 }
 
 .header {
-	@apply flex items-center justify-between mb-6 pb-4 border-b border-gray-200;
+	@apply flex items-center justify-between mb-8 pb-6 border-b border-gray-200/60;
 }
 
 .headerContent {
-	@apply flex items-center gap-3;
+	@apply flex items-center gap-4;
 }
 
 .title {
-	@apply text-2xl font-semibold text-gray-900;
+	@apply text-2xl font-bold text-gray-800;
 }
 
 .addButton {
-	@apply px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded hover:bg-blue-700 transition flex items-center gap-1.5;
+	@apply px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white text-sm font-semibold rounded-lg hover:from-blue-600 hover:to-indigo-600 transition-all duration-200 flex items-center gap-2 shadow-sm hover:shadow-md;
 }
 
 .addButtonIcon {
-	@apply text-base leading-none;
+	@apply text-lg leading-none;
 }
 
 .loading {
-	@apply text-gray-500 text-center py-8;
+	@apply text-gray-500 text-center py-12 flex items-center justify-center gap-3;
+}
+
+.loading::before {
+	@apply content-[''] w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin;
 }
 
 .error {
-	@apply text-red-500 text-center py-8;
+	@apply text-red-500 text-center py-12 p-4 bg-red-50 rounded-lg border border-red-200;
 }
 
 .content {
-	@apply space-y-1;
+	@apply space-y-2;
 }

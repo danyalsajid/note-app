@@ -1,25 +1,40 @@
 @reference 'tailwindcss';
 
 .container {
-	@apply bg-white border-b border-gray-200 px-6 py-3;
+	@apply bg-gradient-to-r from-gray-50/80 to-white/80 backdrop-blur-sm border-b border-gray-200/60 px-6 py-4;
+	@apply shadow-sm;
 }
 
 .header {
-	@apply flex items-center mb-2;
+	@apply flex items-center mb-4 gap-2;
+}
+
+.header i {
+	@apply text-blue-500;
 }
 
 .title {
-	@apply text-sm font-medium text-gray-700;
+	@apply text-base font-semibold text-gray-700;
 }
 
 .tagsList {
-	@apply flex flex-wrap gap-2;
+	@apply flex flex-wrap gap-3;
 }
 
 .tag {
-	@apply px-3 py-1.5 text-sm font-medium rounded-full border border-gray-300 bg-white text-gray-700 hover:bg-blue-50 hover:border-blue-400 hover:text-blue-700 transition-all duration-200 flex items-center;
+	@apply px-4 py-2 text-sm font-medium rounded-full border-2 bg-white text-gray-700 hover:bg-blue-50 hover:border-blue-400 hover:text-blue-700 transition-all duration-200 flex items-center gap-2;
+	@apply shadow-sm hover:shadow-md transform hover:scale-105;
+}
+
+.tag i {
+	@apply text-gray-400;
 }
 
 .tagActive {
-	@apply bg-blue-500 text-white border-blue-500 hover:bg-blue-600 hover:border-blue-600;
+	@apply bg-gradient-to-r from-blue-500 to-indigo-500 text-white border-blue-500 hover:from-blue-600 hover:to-indigo-600;
+	@apply shadow-lg ring-2 ring-blue-200;
+}
+
+.tagActive i {
+	@apply text-white/80;
 }

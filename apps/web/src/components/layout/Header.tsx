@@ -10,7 +10,8 @@ interface HeaderProps {
 
 export default function Header(props: HeaderProps) {
 	const [searchQuery, setSearchQuery] = createSignal('');
-	let debounceTimeout: any;
+	const [isSearchFocused, setIsSearchFocused] = createSignal(false);
+	let debounceTimeout: ReturnType<typeof setTimeout>;
 
 	// Cleanup timeout on component unmount
 	onCleanup(() => {
@@ -54,34 +55,57 @@ export default function Header(props: HeaderProps) {
 				<i class="fas fa-bars" />
 			</button>
 
+			{/* Logo/Brand */}
+			<div class={styles.brand}>
+				<div class={styles.brandIcon}>
+					<i class="fas fa-sticky-note" />
+				</div>
+				<h1 class={styles.brandTitle}>NoteApp</h1>
+			</div>
+
 			{/* Search Bar */}
 			<form onSubmit={handleSearchSubmit} class={styles.searchForm}>
-				<div class={styles.searchContainer}>
+				<div class={`${styles.searchContainer} ${isSearchFocused() ? styles.searchContainerFocused : ''}`}>
 					<div class={styles.searchIcon}>
-						<i class="fas fa-search text-gray-400" />
+						<i class={`fas fa-search ${isSearchFocused() ? 'text-blue-500' : 'text-gray-400'}`} />
 					</div>
 					<input
 						type="text"
 						value={searchQuery()}
 						onInput={handleSearchInput}
+						onFocus={() => setIsSearchFocused(true)}
+						onBlur={() => setIsSearchFocused(false)}
 						placeholder="Search notes..."
 						class={styles.searchInput}
 					/>
 				</div>
 			</form>
 
-			{/* Online Status Indicator */}
-			<OnlineStatusIndicator />
+			{/* Right Section */}
+			<div class={styles.rightSection}>
+				{/* Online Status Indicator */}
+				<OnlineStatusIndicator />
 
-			{/* Logout Button */}
-			<button
-				onClick={() => props.onLogout()}
-				class={styles.logoutButton}
-				title="Logout"
-			>
-				<i class="fas fa-sign-out-alt" />
-				<span>Logout</span>
-			</button>
+				{/* User Profile */}
+				<div class={styles.userProfile}>
+					<div class={styles.userAvatar}>
+						<i class="fas fa-user" />
+					</div>
+					<div class={styles.userInfo}>
+						<span class={styles.userName}>Welcome back!</span>
+					</div>
+				</div>
+
+				{/* Logout Button */}
+				<button
+					onClick={() => props.onLogout()}
+					class={styles.logoutButton}
+					title="Logout"
+				>
+					<i class="fas fa-sign-out-alt" />
+					<span class={styles.logoutText}>Logout</span>
+				</button>
+			</div>
 		</header>
 	);
 }
