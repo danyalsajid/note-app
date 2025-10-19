@@ -1,6 +1,23 @@
 import { TYPE_LABELS, TYPE_COLORS, TYPE_ICONS } from './constants';
 
 /**
+ * Check if the current screen size is mobile (max-width: 1023px)
+ * This matches the Tailwind lg breakpoint
+ */
+export const isMobileView = (): boolean => {
+	if (typeof window === 'undefined') return false; // SSR safety
+	return window.innerWidth < 1024; // lg breakpoint is 1024px
+};
+
+/**
+ * Hook-like function to get mobile view state (for reactive updates)
+ * In SolidJS, this would typically be used with createSignal and window resize listeners
+ */
+export const useIsMobileView = (): boolean => {
+	return isMobileView();
+};
+
+/**
  * Get human-readable label for a hierarchy type
  */
 export const getTypeLabel = (type: string): string => {

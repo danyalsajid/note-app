@@ -23,7 +23,7 @@
 
 .tag {
 	@apply px-4 py-2 text-sm font-medium rounded-full border-2 bg-white text-gray-700 hover:bg-blue-50 hover:border-blue-400 hover:text-blue-700 transition-all duration-200 flex items-center gap-2;
-	@apply shadow-sm hover:shadow-md transform hover:scale-105;
+	@apply shadow-sm hover:shadow-md transform hover:scale-105 cursor-pointer;
 }
 
 .tag i {

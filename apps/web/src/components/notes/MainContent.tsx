@@ -428,30 +428,39 @@ export default function MainContent() {
 										<div class={styles.emptyStep}>
 											<div class={styles.stepNumber}>1</div>
 											<div class={styles.stepContent}>
-												<h3 class={styles.stepTitle}>Create Organizations</h3>
-												<p class={styles.stepDescription}>Start by creating organizations to structure your notes</p>
+												<h3 class={styles.stepTitle}>Build Your Structure</h3>
+												<p class={styles.stepDescription}>Create organizations, teams, and projects to establish your note-taking hierarchy</p>
 											</div>
 										</div>
 										<div class={styles.emptyStep}>
 											<div class={styles.stepNumber}>2</div>
 											<div class={styles.stepContent}>
-												<h3 class={styles.stepTitle}>Add Teams & Projects</h3>
-												<p class={styles.stepDescription}>Build your hierarchy with teams, clients, and episodes</p>
+												<h3 class={styles.stepTitle}>Record Voice Notes</h3>
+												<p class={styles.stepDescription}>Capture ideas instantly with voice recording - perfect for meetings and quick thoughts</p>
 											</div>
 										</div>
 										<div class={styles.emptyStep}>
 											<div class={styles.stepNumber}>3</div>
 											<div class={styles.stepContent}>
-												<h3 class={styles.stepTitle}>Capture Ideas</h3>
-												<p class={styles.stepDescription}>Add notes, tag them, and never lose a thought</p>
+												<h3 class={styles.stepTitle}>Get AI Summaries</h3>
+												<p class={styles.stepDescription}>Let AI summarize your notes automatically, highlighting key points and action items</p>
+											</div>
+										</div>
+										<div class={styles.emptyStep}>
+											<div class={styles.stepNumber}>4</div>
+											<div class={styles.stepContent}>
+												<h3 class={styles.stepTitle}>Tag & Search</h3>
+												<p class={styles.stepDescription}>Use tags to categorize notes and find them instantly with powerful search</p>
 											</div>
 										</div>
 									</div>
 									<div class={styles.emptyTips}>
 										<h3 class={styles.tipsTitle}>💡 Pro Tips</h3>
 										<ul class={styles.tipsList}>
+											<li class={styles.tipItem}>Use voice recording for quick note-taking during meetings or brainstorming</li>
+											<li class={styles.tipItem}>Let AI summarize long notes to extract key insights and action items</li>
 											<li class={styles.tipItem}>Use tags to categorize and find notes quickly</li>
-											<li class={styles.tipItem}>Search across all your notes with the search bar</li>
+											<li class={styles.tipItem}>Search across all your notes with the intelligent search bar</li>
 											<li class={styles.tipItem}>Organize notes by project or context for better workflow</li>
 											<li class={styles.tipItem}>Add rich text and formatting to make notes more readable</li>
 										</ul>

@@ -38,7 +38,7 @@
 }
 
 .addButton {
-	@apply px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white text-sm font-semibold rounded-lg hover:from-blue-600 hover:to-indigo-600 transition-all duration-200 flex items-center gap-2 shadow-sm hover:shadow-md;
+	@apply px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white text-sm font-semibold rounded-lg hover:from-blue-600 hover:to-indigo-600 transition-all duration-200 flex items-center gap-2 shadow-sm hover:shadow-md cursor-pointer;
 }
 
 .addButtonIcon {

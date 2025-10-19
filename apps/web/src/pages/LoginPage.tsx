@@ -129,10 +129,11 @@ const LoginPage: Component = () => {
 					<p class={styles.demoTitle}>Demo Credentials:</p>
 					<div class={styles.demoCredentials}>
 						<p class={styles.demoCredential}>
-							<span class={styles.demoRole}>Admin:</span> admin / Test@123
-						</p>
-						<p class={styles.demoCredential}>
-							<span class={styles.demoRole}>Clinician:</span> clinician / Test@123
+							<span class={styles.demoRole}>Admin:</span>
+							<br />
+							admin
+							<br />
+							Test@123
 						</p>
 					</div>
 				</div>

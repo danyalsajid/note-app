@@ -156,7 +156,7 @@
 
 .noteTag {
 	@apply px-3 py-1 bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 rounded-full text-xs font-medium border border-blue-100;
-	@apply transition-all duration-200;
+	@apply transition-all duration-200 cursor-pointer;
 }
 
 .noteTag:hover {

@@ -1,5 +1,7 @@
 import { createSignal, onCleanup } from 'solid-js';
+import { useNavigate } from '@solidjs/router';
 import OnlineStatusIndicator from '../ui/OnlineStatusIndicator';
+import { isMobileView } from '../../utils';
 import styles from './Header.module.css';
 
 interface HeaderProps {
@@ -9,6 +11,7 @@ interface HeaderProps {
 }
 
 export default function Header(props: HeaderProps) {
+	const navigate = useNavigate();
 	const [searchQuery, setSearchQuery] = createSignal('');
 	const [isSearchFocused, setIsSearchFocused] = createSignal(false);
 	let debounceTimeout: ReturnType<typeof setTimeout>;
@@ -46,17 +49,23 @@ export default function Header(props: HeaderProps) {
 
 	return (
 		<header class={styles.header}>
-			{/* Mobile Menu Toggle */}
-			<button
-				onClick={() => props.onMenuToggle?.()}
-				class={styles.menuToggle}
-				title="Toggle Menu"
-			>
-				<i class="fas fa-bars" />
-			</button>
+			{/* Mobile Menu Toggle - only show on mobile */}
+			{isMobileView() && (
+				<button
+					onClick={() => props.onMenuToggle?.()}
+					class={styles.menuToggle}
+					title="Toggle Menu"
+				>
+					<i class="fas fa-bars" />
+				</button>
+			)}
 
 			{/* Logo/Brand */}
-			<div class={styles.brand}>
+			<div
+				class={`${styles.brand} cursor-pointer`}
+				onClick={() => navigate('/')}
+				title="Go to Home"
+			>
 				<div class={styles.brandIcon}>
 					<i class="fas fa-sticky-note" />
 				</div>
