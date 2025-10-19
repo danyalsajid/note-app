@@ -31,7 +31,7 @@
 }
 
 .tagActive {
-	@apply bg-gradient-to-r from-blue-500 to-indigo-500 text-white border-blue-500 hover:from-blue-600 hover:to-indigo-600;
+	@apply bg-gradient-to-r from-blue-500 to-indigo-500 text-white border-blue-500 hover:from-blue-600 hover:to-indigo-600 hover:text-white;
 	@apply shadow-lg ring-2 ring-blue-200;
 }
 
